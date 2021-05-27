@@ -117,4 +117,4 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
-backend/config/config.json
+config/config.json
