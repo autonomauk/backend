@@ -6,10 +6,11 @@ const { User } = require("../models/user/User");
 const routes = (app) => {
   const router = express.Router();
 
-  router.post("/logout", function(req,res) {
-    User.findByIdAndRemove(req.body.id, (err,user)=>{
+  router.put("/logout", function(req,res) {
+      console.log("Logging out "+req.body.id);
+      const query = User.findByIdAndDelete(req.body.id);
+      query.exec();
       res.send("OK");
-    });
   });
 
   router.get("/login", function (req, res) {
@@ -44,7 +45,6 @@ const routes = (app) => {
       .then(response => response.json())
       .then(response => {
         // Create the user and save it. Return the userid as part of the redirect to home to save it down the line.
-        console.log(response)
         const access_token = response.access_token;
         const expires_in = response.expires_in;
         const refresh_token = response.refresh_token;
@@ -58,8 +58,8 @@ const routes = (app) => {
           .then(response => response.json())
           .then(response => {
             const display_name = response.display_name;
-
-
+            
+            
             User.findOneAndUpdate({ display_name: display_name }, {
               display_name: display_name,
               spotifyAuthDetails: {
@@ -73,6 +73,7 @@ const routes = (app) => {
                 upsert: true
               },
               (error, user) => {                
+                console.log("New user w/ name "+user.display_name+" and id "+user._id);
                 let redirectToHomePage = () => res.redirect('/?id=' + user._id);
                 if (error) {
                   console.error(error.code)

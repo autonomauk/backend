@@ -9,6 +9,8 @@ if (env === "dev"){
     } else {
         key = "dev_local";
     }
+}if(env==="prod"){
+    key = "prod_local";
 } else {
     throw "Unknown config";
 }

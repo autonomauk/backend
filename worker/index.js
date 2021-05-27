@@ -24,11 +24,14 @@ const worker = async () => {
                             findSongsAndAdd(user.display_name, spotifyHelper, playlists.body.items[playlistInd].id);
                         } else {
                             console.error("No playlist with name " + playlistName + " found for " + user.display_name);
-
                             spotifyHelper.spotifyApi.createPlaylist(playlistName).then(playlist => findSongsAndAdd(user.display_name, spotifyHelper, playlist.body.id))
                                 .catch(err => handleErrors(err, spotifyHelper));
                         }
                     })
+                        .catch(err => handleErrors(err, spotifyHelper));
+                } else {
+                    console.error("No playlist with name " + playlistName + " found for " + user.display_name);
+                    spotifyHelper.spotifyApi.createPlaylist(playlistName).then(playlist => findSongsAndAdd(user.display_name, spotifyHelper, playlist.body.id))
                         .catch(err => handleErrors(err, spotifyHelper));
                 }
             }
@@ -40,7 +43,6 @@ const worker = async () => {
 };
 
 const findSongsAndAdd = async (display_name, spotifyHelper, playlistId) => {
-
     const existingTracks = await spotifyHelper.spotifyApi.getPlaylistTracks(playlistId, { fields: 'items.track.uri' })
         .then(res => res.body.items)
         .then(tracks => tracks.map(track => track.track.uri))
@@ -73,6 +75,7 @@ const findMonthlySavedTracks = async (spotifyHelper) => {
 }
 
 const handleErrors = async (error, spotifyHelper) => {
+    console.error(error.toString())
     switch (error.statusCode) {
         case 401:
             switch (error.headers.error_description) {

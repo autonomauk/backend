@@ -23,6 +23,16 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 //app.use(express.static(path.join(__dirname, "public")));
 
+// logger handler
+var logger = function(req,res,next){
+    console.log("Call to ", req.baseUrl + req.path);
+    console.log("   Body:   ", req.body);
+    console.log("   Params: ", req.params);
+    console.log("   Method: ", req.method);
+    next();
+};
+app.use(logger);
+
 const cron = require("node-cron");
 const worker = require("./worker");
 cron.schedule(
