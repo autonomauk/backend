@@ -1,4 +1,4 @@
-require("./config/config");
+require('custom-env').env(true)
 
 const express = require("express");
 // const path = require("path");
@@ -6,7 +6,6 @@ const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const db = require("./db");
-
 
 const mongoose = require("mongoose");
 mongoose.set('useFindAndModify', false);
