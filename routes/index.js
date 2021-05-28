@@ -58,10 +58,12 @@ const routes = (app) => {
           .then(response => response.json())
           .then(response => {
             const display_name = response.display_name;
+            const user_id = response.user_id
             
             
             User.findOneAndUpdate({ display_name: display_name }, {
               display_name: display_name,
+              user_id:user_id
               spotifyAuthDetails: {
                 access_token: access_token,
                 expires_in: expires_in,
