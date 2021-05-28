@@ -3,6 +3,9 @@ const {Song} = require("../song/Song");
 const mongoose = require('mongoose');
 
 const UserSchema = new mongoose.Schema({
+    user_id:{
+        type: String
+    },
     display_name: {
         type: String,
         index: true
