@@ -15,10 +15,10 @@ const worker = async () => {
         spotifyHelper.spotifyApi.getUserPlaylists(user.display_name, { limit: 50 }).then(playlists => {
             const playlistInd = playlists.body.items.findIndex((playlist => playlist.name === playlistName));
             if (playlistInd > -1) {
-                findSongsAndAdd(user.display_name, spotifyHelper, playlists.body.items[playlistInd].id);
+                findSongsAndAdd(user.user_id, spotifyHelper, playlists.body.items[playlistInd].id);
             } else {
                 if ((playlists.body.total - playlists.body.limit) > 0) {
-                    spotifyHelper.spotifyApi.getUserPlaylists(user.display_name, { limit: 50, offset: playlists.body.offset + playlists.body.limit }).then(playlists => {
+                    spotifyHelper.spotifyApi.getUserPlaylists(user.user_id, { limit: 50, offset: playlists.body.offset + playlists.body.limit }).then(playlists => {
                         const playlistInd = playlists.body.items.findIndex((playlist => playlist.name === playlistName));
                         if (playlistInd > -1) {
                             findSongsAndAdd(user.display_name, spotifyHelper, playlists.body.items[playlistInd].id);
