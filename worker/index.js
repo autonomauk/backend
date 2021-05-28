@@ -38,8 +38,6 @@ const worker = async () => {
         })
         .catch(err => handleErrors(err, spotifyHelper));
     });
-
-    console.log("End of worker")
 };
 
 const findSongsAndAdd = async (display_name, spotifyHelper, playlistId) => {
@@ -61,7 +59,7 @@ const findSongsAndAdd = async (display_name, spotifyHelper, playlistId) => {
 };
 
 const findMonthlySavedTracks = async (spotifyHelper) => {
-    return spotifyHelper.spotifyApi.getMySavedTracks({ limit: 10, offset: 0 })
+    return spotifyHelper.spotifyApi.getMySavedTracks({ limit: 50, offset: 0 })
         .then(tracks => tracks.body.items)
         .then(tracks => tracks.filter(track => {
             const added_at = moment(track.added_at, "YYYY MM DD hh:mm:ss");
@@ -75,12 +73,11 @@ const findMonthlySavedTracks = async (spotifyHelper) => {
 }
 
 const handleErrors = async (error, spotifyHelper) => {
-    console.error(error.toString())
     switch (error.statusCode) {
         case 401:
-            switch (error.headers.error_description) {
+            switch (error.body.error.message) {
                 case "The access token expired":
-                    spotifyHelper.spotifyApi.refreshToken();
+                    spotifyHelper.refreshToken();
                     break;
             }
             break;
