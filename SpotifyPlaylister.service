@@ -1,0 +1,19 @@
+[Unit]
+Description=SpotifyPlaylister Express.js Server
+
+[Service]
+ExecStart=/usr/bin/node /home/jhewers/SpotifyPlaylisterGit/backend/server.js
+WorkingDirectory=/home/jhewers/SpotifyPlaylisterGit/backend
+Restart=always
+# Restart service after 10 seconds if node service crashes
+RestartSec=10
+# Output to syslog
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=spotify-playlister
+User=jhewers
+Group=jhewers
+Environment=NODE_ENV=production
+
+[Install]
+WantedBy=multi-user.target
