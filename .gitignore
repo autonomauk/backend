@@ -136,3 +136,4 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
+backend/config/config.py backend/venv/lib/python3.9/site-packages/setuptools/config.py backend/venv/lib/python3.9/site-packages/setuptools/_distutils/command/config.py backend/venv/lib/python3.9/site-packages/setuptools/_distutils/config.py backend/venv/lib/python3.9/site-packages/starlette/config.py backend/venv/lib/python3.9/site-packages/uvicorn/config.py
