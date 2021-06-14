@@ -1,11 +1,11 @@
 [Unit]
-Description=SpotifyPlaylister Express.js Server
+Description=SpotifyPlaylister API Worker
 
 [Service]
-ExecStart=/usr/bin/node /home/www/SpotifyPlaylister/backend/server.js
+ExecStart=python3 /home/www/SpotifyPlaylister/backend --worker --env production
 WorkingDirectory=/home/www/SpotifyPlaylister/backend
 Restart=always
-# Restart service after 10 seconds if node service crashes
+# Restart service after 10 seconds if python service crashes
 RestartSec=10
 # Output to syslog
 StandardOutput=syslog
@@ -13,7 +13,6 @@ StandardError=syslog
 SyslogIdentifier=spotify-playlister
 User=www
 Group=www
-Environment=NODE_ENV=production
 
 [Install]
 WantedBy=multi-user.target
