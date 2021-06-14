@@ -1,3 +1,4 @@
+import utils
 from models.errors import AuthenticationFailure
 from models.JWToken import JWToken
 from typing import Optional
@@ -98,17 +99,14 @@ class AuthFlowRepository:
 
         if res.ok:
             res = res.json()
-            access_token = res['access_token']
-            refresh_token = res['refresh_token']
+            res['expires_at'] = res['expires_in'] + utils.get_time()
+            spotifyAuthDetails = SpotifyAuthDetails(**res)
+
 
             res = requests.get("https://api.spotify.com/v1/me", headers={
-                "Authorization": f"Bearer {access_token}"
+                "Authorization": f"Bearer {spotifyAuthDetails.access_token}"
             })
 
-            spotifyAuthDetails = SpotifyAuthDetails(
-                access_token=access_token,
-                refresh_token=refresh_token
-            )
             user = User(
                 spotifyAuthDetails=spotifyAuthDetails,
                 user_id=res.json()['id'])
