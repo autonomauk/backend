@@ -6,7 +6,7 @@ from models.User import User, Users
 class UserRepository:
     @staticmethod
     def get(id: str) -> User:
-        document = users_collection.find_one({'_id':id})
+        document = users_collection.find_one({'id':id})
         if not document:
             raise UserNotFoundException(identifier=id)
         return User(**document)
@@ -40,13 +40,13 @@ class UserRepository:
         document = update.dict()
         document["updated"] = get_time()
 
-        results = users_collection.update_one({'_id':id}, {"$set":document})
+        results = users_collection.update_one({'id':id}, {"$set":document})
         if not results.modified_count:
             raise UserNotFoundException(identifier=id)
 
     @staticmethod
     def delete(id: str):
-        result = users_collection.delete_one({'_id':id})
+        result = users_collection.delete_one({'id':id})
         if not result.deleted_count:
             raise UserNotFoundException(identifier=id)
 
