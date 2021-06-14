@@ -1,14 +1,13 @@
-FROM node:lts-buster-slim
+FROM python:3.9.5
 
 # Create app directory
 WORKDIR /usr/src/app
 
-COPY package.json /usr/src/app/package.json
-COPY package-lock.json /usr/src/app/package-lock.json
-RUN npm ci
+COPY requirements.text /usr/src/app/requirements.txt
+RUN pip install -r requirements.txt
 
 COPY . /usr/src/app
 
 EXPOSE 3000
 
-CMD ["DOCKER=true", "npm", "run", "dev" ]
+CMD ["ENV=prod","DOCKER=1", "pytho3", "main.py"]
