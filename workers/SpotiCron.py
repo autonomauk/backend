@@ -1,3 +1,11 @@
+from logging import info
+import dateutil.parser
+import datetime
+import time
+
+from pydantic.types import conset
+
+from models.SpotifyAuthDetails import SpotifyAuthDetails
 from typing import List
 
 from spotipy.exceptions import SpotifyException
@@ -8,63 +16,148 @@ import spotipy
 from config import *
 
 from pydantic import BaseModel
-import time
+
+import schedule
+
+from loguru import logger
+import sys
+logger.configure(**{
+    "handlers": [
+        {"sink": sys.stderr, "format": "UP {elapsed} | <level>{level: <8}</level> | PID {process} | <cyan>{file}</cyan>:<cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - <level>{message}</level>"}
+    ]})
+
 
 class Track(BaseModel):
-    id:str 
-    uri:str
+    id: str
+
 
 Tracks = List[Track]
 
+
 class Playlist(BaseModel):
-    name:str
-    id:str
-    uri:str
+    name: str
+    id: str = None
+
 
 Playlists = List[Playlist]
 
-def RefreshAndRepeatIfRequired(func):
-    def handler(*args, **kwargs):
-        try:
-            func(*args, **kwargs)
-        except SpotifyException as e:
-            if e.msg.find("The access token expired") and any([isinstance(f,User) for f in args]):
-                user = [f for f in args if isinstance(f, User)][0]
-                spotify = spotipy.Spotify(user.spotifyAuthDetails.access_token)
-                https://stackoverflow.com/questions/49239516/spotipy-refreshing-a-token-with-authorization-code-flow
-                spotify.oauth_manager.refresh_access_token(user.spotifyAuthDetails.refresh_token)
-
-
-    return handler
+spotify_oauth = spotipy.oauth2.SpotifyOAuth(
+    client_id=SPOTIFY_CLIENT_ID, client_secret=SPOTIFY_CLIENT_SECRET, redirect_uri=SPOTIFY_REDIRECT_URI)
 
 
 def SpotiCronRunner():
     playlist_name = time.strftime('%B %y', time.localtime())
+    target_playlist: Playlist = Playlist(name=playlist_name)
+
     users: Users = UserRepository.list()
-    
-    user: User = users[0]
 
-    SpotiCronPerUser(user)
+    for user in users:
+        try:
+            SpotiCronPerUser(user, target_playlist)
+        except SpotifyException as e:
+            if e.msg.find("The access token expired"):
+                SpotiCronPerUser(user, target_playlist)
 
-@RefreshAndRepeatIfRequired     
-def SpotiCronPerUser(user: User):
+
+@logger.catch
+def SpotiCronPerUser(user: User, target_playlist: Playlist):
+    if spotify_oauth.is_token_expired(user.spotifyAuthDetails.dict()):
+        logger.debug(f"Refreshing access token for {user.id}")
+        token_info = spotify_oauth.refresh_access_token(
+            user.spotifyAuthDetails.refresh_token)
+
+        user.spotifyAuthDetails = SpotifyAuthDetails(**token_info)
+        UserRepository.update(user.id, user)
+
     spotify = spotipy.Spotify(user.spotifyAuthDetails.access_token)
-    
-    playlists = []
+
+    # Try to find playlist
+    playlists: Playlists = []
+    limit = 50
+    offset = 0
+    total = None
     while True:
-        limit = 50
-        offset = 0
-        while True:
-            playlists = spotify.current_user_playlists(limit=limit,offset=offset)
-            playlists = [Playlist(**document) for document in  playlists['items']]
+        playlists = spotify.current_user_playlists(
+            limit=limit, offset=offset)
+        total = playlists['total']
+        playlists: Playlists = [Playlist(**document)
+                                for document in playlists['items']]
 
+        for playlist in playlists:
+            if playlist.name == target_playlist.name:
+                target_playlist.id = playlist.id
 
+        if target_playlist.id is not None:
+            break
+        elif offset < total:
+            offset += limit
+        else:
+            # Create playlist
+            playlist = spotify.user_playlist_create(
+                user.user_id,
+                target_playlist.name,
+                public=True,
+                collaborative=False,
+                description=f"Playlist created by {SP_WEBSITE}"
+            )
+            break
 
-        tracks = spotify.current_user_saved_tracks(limit=limit,offset=offset)
-        tracks: Tracks = [Track(**document['track']) for document in tracks['items']]
+    # Find all saved tracks for this month
+    # TODO: Compare with playlist's current songs or even "last checked"
+    saved_tracks: Tracks = []
+    today: datetime.date = datetime.date.today()
+    while True:
+        more_to_add = True
+        for item in spotify.current_user_saved_tracks(limit=limit, offset=offset)['items']:
+            added_at = dateutil.parser.parse(item['added_at'])
+            # TODO Change logic for different playlist schema
+            if added_at.month == today.month and added_at.year == today.year:
+                saved_tracks.append(Track(**item['track']))
+            else:
+                more_to_add = False
+        if not more_to_add:
+            break
 
+    tracks_in_playlist: Tracks = []
+    limit = 100
+    offset = 0
+    total = None
+    while True:
+        result = spotify.playlist_tracks(
+            target_playlist.id,
+            limit=limit,
+            offset=offset)
+        total = result['total']
 
+        for item in result['items']:
+            item = item['track']
+            tracks_in_playlist.append(Track(**item))
 
+        if offset < total:
+            offset += limit
+        else:
+            break
 
-if __name__ == "__main__":
-    SpotiCronRunner()
+    tracks_to_add: Tracks = [Track(id=g) for g in
+                             # Difference in sets
+                             set([f.id for f in saved_tracks]) - \
+                             set([f.id for f in tracks_in_playlist])
+                             ]
+
+    if len(tracks_to_add) > 0:
+        logger.info(
+            f"{len(tracks_to_add)} track{'s' if len(tracks_to_add) > 1 else ''} to add for user {user.id}")
+        spotify.playlist_add_items(
+            target_playlist.id, [track.id for track in tracks_to_add])
+    else:
+        logger.debug(f"No tracks to add for user {user.id}")
+
+def SpotiCron():
+    logger.info("Starting SpotiCron.py")
+    schedule.every(1).minutes.do(SpotiCronRunner)
+
+    while True:
+        schedule.run_pending()
+        time.sleep(1)
+
+    logger.info("Exiting SpotiCron.py")
