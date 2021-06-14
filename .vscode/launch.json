@@ -7,7 +7,7 @@
     {
       "name": "Python: Current File",
       "type": "python",
-      "env": {"ENV":"dev","PYTHONPATH":"${workspaceFolder}"},
+      "env": {"SP_ENV":"development"},
       "request": "launch",
       "program": "${file}",
       "console": "integratedTerminal"
@@ -17,10 +17,8 @@
       "type": "python",
       "request": "launch",
       "module": "uvicorn",
-      "env": {
-        "ENV": "dev"
-      },
-      "args": ["main:app", "--reload"],
+      "env": {"SP_ENV":"development"},
+      "args": ["api:app", "--reload"],
       "jinja": true
     }
   ]
