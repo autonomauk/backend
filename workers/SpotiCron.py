@@ -21,6 +21,7 @@ import schedule
 
 from loguru import logger
 import sys
+
 logger.configure(**{
     "handlers": [
         {"sink": sys.stderr, "format": "UP {elapsed} | <level>{level: <8}</level> | PID {process} | <cyan>{file}</cyan>:<cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - <level>{message}</level>"}
