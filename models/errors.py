@@ -13,4 +13,4 @@ class AlreadyExistsError(BaseIdentifiedError):
     pass
 
 class AuthenticationFailure(BaseError):
-    pass
+    message: str = Field(...,description="Operation not authorized")
