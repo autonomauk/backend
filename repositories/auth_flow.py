@@ -9,12 +9,15 @@ from models.SpotifyAuthDetails import SpotifyAuthDetails
 from repositories.exceptions import AuthenticationFailureException, SpotifyAuthenticationFailureException, UserNotFoundException
 from repositories.user import UserRepository
 from starlette.responses import RedirectResponse
+import inspect
 from config import *
 
 import requests
 import base64
 
-from jose import JWTError, jwt
+from jose import jwt as joseJWT
+from jose import JWTError as joseJWTError
+
 
 
 from loguru import logger
@@ -23,37 +26,41 @@ class AuthFlowRepository:
     @staticmethod
     def create_JWT(user:User) -> JWToken:
         to_encode = {'id':user.id,'exp': datetime.utcnow() + timedelta(minutes=JWT_ACCESS_TOKEN_EXPIRE_MINUTES)}
-        encoded_jwt = jwt.encode(to_encode, JWT_SECRET_KEY, algorithm=JWT_ALGORITHM)
+        encoded_jwt = joseJWT.encode(to_encode, JWT_SECRET_KEY, algorithm=JWT_ALGORITHM)
         return JWToken(access_token=encoded_jwt,token_type="bearer")
 
     @staticmethod
     def validate_JWT(jwt_str:str) -> str:
         try:
-            payload = jwt.decode(jwt_str, JWT_SECRET_KEY, algorithms=[JWT_ALGORITHM])
+            payload = joseJWT.decode(jwt_str, JWT_SECRET_KEY, algorithms=[JWT_ALGORITHM])
             id: str = payload.get("id")
             if id is None:
                 raise AuthenticationFailureException()
-        except JWTError:
+        except joseJWTError:
             raise AuthenticationFailureException()
         return id
 
     @staticmethod
     def auth_required(handler):
-        def wrapper( *args,JWT: str = Header(None), **kwargs):
-            try:
-                AuthFlowRepository.validate_JWT(JWT)
-            except AuthenticationFailureException:
-                return AuthenticationFailureException()
-            
-            return handler(*args, **kwargs)
+        # Add jwt to the handler, otherwise just check the jwt
+        if "jwt" not in inspect.signature(handler).parameters:
+            def wrapper(*args,jwt: str = Header(None), **kwargs):
+                if jwt is None:
+                    raise AuthenticationFailureException()
+                AuthFlowRepository.validate_JWT(jwt)
+                return handler(*args, **kwargs)
+        else:
+            def wrapper(*args,**kwargs):
+                if kwargs['jwt'] is None:
+                    raise AuthenticationFailureException()
+                AuthFlowRepository.validate_JWT(kwargs['jwt'])
+                return handler(*args,**kwargs)
 
         # Fix signature of wrapper
-        import inspect
         wrapper.__signature__ = inspect.Signature(
             parameters = [
                 # Use all parameters from handler
                 *inspect.signature(handler).parameters.values(),
-
                 # Skip *args and **kwargs from wrapper parameters:
                 *filter(
                     lambda p: p.kind not in (inspect.Parameter.VAR_POSITIONAL, inspect.Parameter.VAR_KEYWORD),
@@ -119,8 +126,10 @@ class AuthFlowRepository:
                 logger.debug(f"User with id {user.id} was created")
 
             jwt = AuthFlowRepository.create_JWT(user)
-            return RedirectResponse(f"/?code={jwt.access_token}")
+            rr = RedirectResponse(f"/")
+            rr.set_cookie(key="jwt", value=jwt.access_token)
+            return rr
 
         else:
             logger.error("Unable to authenticate.", res.text)
-            return SpotifyAuthenticationFailureException()
+            raise SpotifyAuthenticationFailureException()
