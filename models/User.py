@@ -1,4 +1,5 @@
-from typing import List, Optional
+from models.Settings import Settings
+from typing import List, Optional, Set
 from models.SpotifyAuthDetails import SpotifyAuthDetailsFields,SpotifyAuthDetails
 from os import access
 from pydantic import BaseModel
@@ -8,7 +9,7 @@ _string = dict(min_length=1)
 
 class UserFields:
     id = Field(
-        description="UUID fo user",
+        description="UUID for user",
         type=Optional[str],
         **_string
     )
@@ -23,6 +24,12 @@ class UserFields:
         description="Spotify auth tokens"
     )
 
+    settings = Field(
+        description="User settings",
+        type=Settings,
+        default=Settings()
+    )
+
 class UserBaseModel(BaseModel):
     id: Optional[str] = UserFields.id
 
@@ -31,5 +38,7 @@ class User(UserBaseModel):
     spotifyAuthDetails: SpotifyAuthDetails = UserFields.spotifyAuthDetails
 
     user_id: str = UserFields.user_id
+
+    settings: Settings = UserFields.settings
 
 Users = List[User]

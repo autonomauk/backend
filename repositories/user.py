@@ -33,7 +33,7 @@ class UserRepository:
         results = users_collection.insert_one(document)
         assert results.acknowledged
 
-        return UserRepository.get(results.inserted_id)
+        return UserRepository.get(document['id'])
 
     @staticmethod
     def update(id, update: User):
