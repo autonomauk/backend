@@ -48,20 +48,21 @@ spotify_oauth = spotipy.oauth2.SpotifyOAuth(
 
 def SpotiCronRunner():
     playlist_name = time.strftime('%B %y', time.localtime())
-    target_playlist: Playlist = Playlist(name=playlist_name)
 
     users: Users = UserRepository.list()
 
     for user in users:
         try:
-            SpotiCronPerUser(user, target_playlist)
+            SpotiCronPerUser(user, playlist_name)
         except SpotifyException as e:
             if e.msg.find("The access token expired"):
-                SpotiCronPerUser(user, target_playlist)
+                SpotiCronPerUser(user, playlist_name)
 
 
 @logger.catch
-def SpotiCronPerUser(user: User, target_playlist: Playlist):
+def SpotiCronPerUser(user: User, playlist_name: str):
+    target_playlist: Playlist = Playlist(name=playlist_name)
+    
     if spotify_oauth.is_token_expired(user.spotifyAuthDetails.dict()):
         logger.debug(f"Refreshing access token for {user.id}")
         token_info = spotify_oauth.refresh_access_token(
