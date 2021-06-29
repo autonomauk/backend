@@ -8,8 +8,8 @@ Restart=always
 # Restart service after 10 seconds if python service crashes
 RestartSec=10
 # Output to syslog
-StandardOutput=syslog
-StandardError=syslog
+StandardOutput=journal
+StandardError=journal
 SyslogIdentifier=spotify-playlister
 User=www
 Group=www
