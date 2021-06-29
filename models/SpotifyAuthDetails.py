@@ -1,3 +1,4 @@
+from datetime import datetime
 from os import access
 from typing import Any
 import utils
@@ -24,6 +25,11 @@ class SpotifyAuthDetails(BaseModel):
 
     expires_in: int = SpotifyAuthDetailsFields.expires_in
 
-    expires_at: int = SpotifyAuthDetailsFields.expires_at
+    expires_at: datetime = SpotifyAuthDetailsFields.expires_at
 
     token_type: str = SpotifyAuthDetailsFields.token_type
+
+    def to_spotipy_dict(self):
+        d = self.dict()
+        d['expires_at'] = d['expires_at'].timestamp()
+        return d

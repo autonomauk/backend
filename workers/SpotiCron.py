@@ -60,7 +60,7 @@ def SpotiCronRunner():
 def SpotiCronPerUser(user: User, playlist_name: str):
     target_playlist: Playlist = Playlist(name=playlist_name)
     
-    if spotify_oauth.is_token_expired(user.spotifyAuthDetails.dict()):
+    if spotify_oauth.is_token_expired(user.spotifyAuthDetails.to_spotipy_dict()):
         logger.debug(f"Refreshing access token for {user.id}")
         token_info = spotify_oauth.refresh_access_token(
             user.spotifyAuthDetails.refresh_token)

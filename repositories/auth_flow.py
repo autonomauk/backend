@@ -106,7 +106,7 @@ class AuthFlowRepository:
 
         if res.ok:
             res = res.json()
-            res['expires_at'] = res['expires_in'] + utils.get_time()
+            res['expires_at'] = timedelta( seconds= res['expires_in']) + utils.get_time()
             spotifyAuthDetails = SpotifyAuthDetails(**res)
 
 

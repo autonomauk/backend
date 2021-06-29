@@ -27,7 +27,7 @@ class UserRepository:
     def create(create: User) -> User:
 
         document = create.dict()
-        document['created'] = document['updated'] = get_time()
+        document['createdAt'] = document['updatedAt'] = get_time()
         document['id'] = get_uuid()
 
         results = users_collection.insert_one(document)
@@ -38,7 +38,7 @@ class UserRepository:
     @staticmethod
     def update(id, update: User):
         document = update.dict()
-        document["updated"] = get_time()
+        document["updatedAt"] = get_time()
 
         results = users_collection.update_one({'id':id}, {"$set":document})
         if not results.modified_count:
@@ -49,4 +49,3 @@ class UserRepository:
         result = users_collection.delete_one({'id':id})
         if not result.deleted_count:
             raise UserNotFoundException(identifier=id)
-
