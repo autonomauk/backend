@@ -156,7 +156,7 @@ def SpotiCronPerUser(user: User, playlist_name: str):
 
 def SpotiCron():
     logger.info("Starting SpotiCron.py")
-    schedule.every(1).minutes.do(SpotiCronRunner)
+    schedule.every(3).minutes.do(SpotiCronRunner)
 
     while True:
         schedule.run_pending()
