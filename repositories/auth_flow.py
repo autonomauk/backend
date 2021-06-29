@@ -75,7 +75,7 @@ class AuthFlowRepository:
 
     @staticmethod
     def login() -> RedirectResponse:
-        scopes: str = 'user-read-private user-library-read playlist-modify-public playlist-modify-private'
+        scopes: str = SPOTIFY_SCOPE 
         response: RedirectResponse = RedirectResponse(
             f"https://accounts.spotify.com/authorize?response_type=code&client_id={SPOTIFY_CLIENT_ID}&scope={scopes}&redirect_uri={SPOTIFY_REDIRECT_URI}"
         )

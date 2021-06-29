@@ -20,13 +20,6 @@ from pydantic import BaseModel
 import schedule
 
 from loguru import logger
-import sys
-
-logger.configure(**{
-    "handlers": [
-        {"sink": sys.stderr, "format": "UP {elapsed} | <level>{level: <8}</level> | PID {process} | <cyan>{file}</cyan>:<cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - <level>{message}</level>"}
-    ]})
-
 
 class Track(BaseModel):
     id: str
@@ -47,16 +40,20 @@ spotify_oauth = spotipy.oauth2.SpotifyOAuth(
 
 
 def SpotiCronRunner():
+    t = time.time()
     playlist_name = time.strftime('%B %y', time.localtime())
 
     users: Users = UserRepository.list()
-
+    
+    logger.info(f"Start of SpotiCronRunner with {len(users)} users")
+    
     for user in users:
         try:
             SpotiCronPerUser(user, playlist_name)
         except SpotifyException as e:
             if e.msg.find("The access token expired"):
                 SpotiCronPerUser(user, playlist_name)
+    logger.info(f"End of SpotiCronRunner after {time.time()-t:.2f}s")
 
 
 @logger.catch
@@ -106,6 +103,8 @@ def SpotiCronPerUser(user: User, playlist_name: str):
 
     # Find all saved tracks for this month
     # TODO: Compare with playlist's current songs or even "last checked"
+    limit=50
+    offset=0
     saved_tracks: Tracks = []
     today: datetime.date = datetime.date.today()
     while True:
@@ -117,7 +116,10 @@ def SpotiCronPerUser(user: User, playlist_name: str):
                 saved_tracks.append(Track(**item['track']))
             else:
                 more_to_add = False
-        if not more_to_add:
+        logger.debug(f"{user.id=} with {len(saved_tracks)=} {limit=} and {offset=}")
+        if more_to_add:
+            offset+=limit
+        else:
             break
 
     tracks_in_playlist: Tracks = []
@@ -157,7 +159,8 @@ def SpotiCronPerUser(user: User, playlist_name: str):
 def SpotiCron():
     logger.info("Starting SpotiCron.py")
     schedule.every(3).minutes.do(SpotiCronRunner)
-
+    
+    SpotiCronRunner()
     while True:
         schedule.run_pending()
         time.sleep(1)
