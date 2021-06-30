@@ -21,13 +21,13 @@ if __name__ == "__main__":
             {
                 "sink": sys.stderr, 
                 "format": "UP {elapsed} | <level>{level: <8}</level> | PID {process} | <cyan>{file}</cyan>:<cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - <level>{message}</level>",
-                "level":"INFO" if args.env=="production" else "DEBUG"
+                #"level":"INFO" if args.env=="production" else "DEBUG"
                 }
         ]})
 
     if args.server:
-        from config import PORT, UVICORN_ROOT_PATH
-        uvicorn.run("api:app", host="127.0.0.1", port=PORT, root_path=UVICORN_ROOT_PATH, reload=args.env=="development")
+        from config import PORT, UVICORN_ROOT_PATH, HOST_IP
+        uvicorn.run("api:app", host=HOST_IP, port=PORT, root_path=UVICORN_ROOT_PATH, reload=args.env=="development")
     elif args.worker:
         from workers.SpotiCron import SpotiCron
         SpotiCron()

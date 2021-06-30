@@ -3,11 +3,10 @@ FROM python:3.9.5
 # Create app directory
 WORKDIR /usr/src/app
 
-COPY requirements.text /usr/src/app/requirements.txt
+COPY requirements.txt /usr/src/app/requirements.txt
 RUN pip install -r requirements.txt
+VOLUME .:/usr/src/app
 
-COPY . /usr/src/app
+EXPOSE 3001
 
-EXPOSE 3000
-
-CMD ["ENV=prod","DOCKER=1", "pytho3", "main.py"]
+CMD ["python3", ".", "--server","--env","development"]

@@ -60,7 +60,7 @@ def user_login_callback(code: str) -> RedirectResponse:
 # USER SETTINGS #
 #################
 
-@app.get("/settings/me",
+@app.get("/me/settings",
 response_model=Settings,
          responses={
              **AuthenticationFailureException.response_model(),
@@ -72,7 +72,7 @@ def read_users_settings(jwt:str=Header(None)):
     user = UserRepository.get(id)
     return user.settings
 
-@app.patch("/settings/me",
+@app.patch("/me/settings",
 response_model=Settings,
            responses={
                **AuthenticationFailureException.response_model(),
@@ -82,7 +82,7 @@ response_model=Settings,
 def update_users_settings():
     pass
 
-@app.delete('/settings/me',
+@app.delete('/me/settings',
             responses={
                 **AuthenticationFailureException.response_model(),
                 **UserNotFoundException.response_model()}
@@ -98,7 +98,7 @@ def delete_user(jwt:str=Header(None)) -> str:
 # Home #
 ########
 
-# @app.get("/")
-# def root():
-#     return RedirectResponse("/docs")
+@app.get("/")
+def root():
+    return RedirectResponse("/")
 
