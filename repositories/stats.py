@@ -3,6 +3,7 @@ from enum import Enum
 from typing import Optional
 from pydantic.fields import Field
 from models.TimedBaseModel import TimedBaseModel
+import pymongo
 from utils import stats_collection
 
 
@@ -73,6 +74,6 @@ class StatsRepository:
         createdAt = query.pop('createdAt')
         updatedAt = query.pop('updatedAt')
         query.pop('counter')
-        result = stats_collection.update_one(query, {"$inc": {"counter": 1}, "$set": {
-                                             "updatedAt": updatedAt}, "$min": {"createdAt": createdAt}}, upsert=True)
-        assert result.acknowledged
+        result = stats_collection.find_one_and_update(query, {"$inc": {"counter": 1}, "$set": {
+                                             "updatedAt": updatedAt}, "$min": {"createdAt": createdAt}}, upsert=True, return_document=pymongo.collection.ReturnDocument.AFTER)
+        return SpotifyRequestCalled(**result)
