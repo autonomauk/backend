@@ -1,3 +1,4 @@
+from repositories.stats import StatsRepository
 from models.Settings import Settings
 from models.User import User
 import loguru
@@ -74,6 +75,7 @@ def delete_user(jwt: str = Header(None)) -> str:
     id = AuthFlowRepository.validate_JWT(jwt)
     UserRepository.delete(PydanticObjectId.validate(id))
     logger.info(f'User with {id=} was deleted')
+    StatsRepository.user_deletion()
     return "OK"
 
 ### Settings ###

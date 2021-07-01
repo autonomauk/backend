@@ -1,3 +1,4 @@
+from repositories.stats import StatsRepository
 import utils
 from models.errors import AuthenticationFailure
 from models.JWToken import JWToken
@@ -124,6 +125,7 @@ class AuthFlowRepository:
             except UserNotFoundException:
                 user: User = UserRepository.create(user)
                 logger.debug(f"User with id {user.id} was created")
+                StatsRepository.user_creation()
 
             jwt = AuthFlowRepository.create_JWT(user)
             rr = RedirectResponse(f"/")

@@ -1,4 +1,5 @@
 from logging import info
+from repositories.stats import RunTime, StatsRepository
 from bson.objectid import ObjectId
 import dateutil.parser
 import datetime
@@ -25,20 +26,23 @@ from loguru import logger
 class Track(BaseModel):
     id: str
 
-
 Tracks = List[Track]
-
 
 class Playlist(BaseModel):
     name: str
     id: str = None
-
 
 Playlists = List[Playlist]
 
 spotify_oauth = spotipy.oauth2.SpotifyOAuth(
     client_id=SPOTIFY_CLIENT_ID, client_secret=SPOTIFY_CLIENT_SECRET, redirect_uri=SPOTIFY_REDIRECT_URI)
 
+# Over-write the original function to track our Spotify API requests
+orig_func = spotipy.Spotify._internal_call
+def wrapper(*args,**kwargs):
+    StatsRepository.spotify_request_called()
+    return orig_func(*args,**kwargs)
+spotipy.Spotify._internal_call = wrapper    
 
 def SpotiCronRunner():
     t = time.time()
@@ -47,7 +51,7 @@ def SpotiCronRunner():
     users: Users = UserRepository.list()
     
     logger.info(f"Start of SpotiCronRunner with {len(users)} users")
-    
+
     for user in users:
         logger.debug(f"Running for {user.id=}")
         try:
@@ -55,7 +59,9 @@ def SpotiCronRunner():
         except SpotifyException as e:
             if e.msg.find("The access token expired"):
                 SpotiCronPerUser(user, playlist_name)
-    logger.info(f"End of SpotiCronRunner after {time.time()-t:.2f}s")
+    rt = RunTime(time=time.time()-t)
+    StatsRepository.spoticron_run_time(rt)
+    logger.info(f"End of SpotiCronRunner after {rt.time:.2f}s")
 
 
 @logger.catch

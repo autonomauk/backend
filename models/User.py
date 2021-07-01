@@ -1,11 +1,8 @@
-from bson.objectid import ObjectId
+from models.TimedBaseModel import TimedBaseModel
 from models.ObjectId import PydanticObjectId
-from utils.time import get_time
 from models.Settings import Settings
-from typing import List, Optional, Set
-from models.SpotifyAuthDetails import SpotifyAuthDetailsFields, SpotifyAuthDetails
-import datetime
-from pydantic import BaseModel
+from typing import List, Optional
+from models.SpotifyAuthDetails import SpotifyAuthDetails
 from pydantic.fields import Field
 
 _string = dict(min_length=1)
@@ -34,24 +31,7 @@ class UserFields:
         default=Settings()
     )
 
-    createdAt = Field(
-        description="Created at datetime",
-        type=datetime.datetime,
-        default_factory=lambda: get_time()
-    )
-
-    updatedAt = Field(
-        description="Created at datetime",
-        type=datetime.datetime,
-        default_factory=lambda: get_time()
-    )
-
-
-class User(BaseModel):
-
-    createdAt: Optional[datetime.datetime] = UserFields.createdAt
-
-    updatedAt: Optional[datetime.datetime] = UserFields.updatedAt
+class User(TimedBaseModel):
 
     id: Optional[PydanticObjectId] = UserFields.id
 
@@ -67,22 +47,9 @@ class User(BaseModel):
         }
 
     def dict(self, *args,**kwargs):
-        d = BaseModel.dict(self, *args,**kwargs)
+        d = TimedBaseModel.dict(self, *args,**kwargs)
         d.pop('id')
         return d
 
 
 Users = List[User]
-
-class Test(BaseModel):
-    id: Optional[PydanticObjectId] = UserFields.id
-    
-    def dict(self, *args,**kwargs):
-        d = BaseModel.dict(self, *args,**kwargs)
-        d.pop('id')
-        return d
-
-    class Config:
-        json_encoders = {
-            PydanticObjectId: str
-        }
