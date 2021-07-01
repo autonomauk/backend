@@ -7,6 +7,8 @@ import sys
 parser = argparse.ArgumentParser(prog='SpotifyPlaylister', description='SpotifyPlaylister CLI')
 parser.add_argument('--worker', action='store_true')
 parser.add_argument('--server', action='store_true')
+parser.add_argument('--migrate', action='store_true')
+
 
 parser.add_argument("--env", choices=['production','development'], default='development')
 
@@ -14,7 +16,6 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     os.environ['SP_ENV'] = args.env
-
 
     logger.configure(**{
         "handlers": [
@@ -31,5 +32,8 @@ if __name__ == "__main__":
     elif args.worker:
         from workers.SpotiCron import SpotiCron
         SpotiCron()
+    elif args.migrate:
+        from workers.MongoMigrate import run_migrations
+        run_migrations()
     else:
         parser.print_help()

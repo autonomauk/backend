@@ -1,4 +1,4 @@
-from uuid import uuid4
+from models.ObjectId import PydanticObjectId
 
 def get_uuid() -> str:
-    return str(uuid4())
+    return PydanticObjectId() 

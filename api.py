@@ -26,13 +26,14 @@ import crontab
 
 app = FastAPI(
     title="SpotifyPlaylister",
-    docs_url= None if config.SP_ENV == "production" else '/docs',
+    docs_url=None if config.SP_ENV == "production" else '/docs',
     redoc_url=None if config.SP_ENV == "production" else '/redoc',
     openapi_url=None if config.SP_ENV == "production" else '/openapi.json'
 )
 
 app.add_middleware(CORSMiddleware, allow_origins=[
                    "*"], allow_credentials=True, allow_methods=["*"], allow_headers=["*"])  # TODO Change this
+
 
 @app.exception_handler(BaseAPIException)
 def http_exception_handler(request, exc) -> BaseAPIException:
@@ -56,24 +57,42 @@ def user_login_callback(code: str) -> RedirectResponse:
     return AuthFlowRepository.login_callback(code)
 
 
-#################
-# USER SETTINGS #
-#################
+########
+# USER #
+########
+
+### Me ####
+
+@app.delete('/me',
+            responses={
+                **AuthenticationFailureException.response_model(),
+                **UserNotFoundException.response_model()}
+            )
+@AuthFlowRepository.auth_required
+def delete_user(jwt: str = Header(None)) -> str:
+    id = AuthFlowRepository.validate_JWT(jwt)
+    UserRepository.delete(id)
+    logger.info(f'User with {id=} was deleted')
+    return "OK"
+
+### Settings ###
+
 
 @app.get("/me/settings",
-response_model=Settings,
+         response_model=Settings,
          responses={
              **AuthenticationFailureException.response_model(),
              **UserNotFoundException.response_model()}
          )
 @AuthFlowRepository.auth_required
-def read_users_settings(jwt:str=Header(None)):
+def read_users_settings(jwt: str = Header(None)):
     id = AuthFlowRepository.validate_JWT(jwt)
     user = UserRepository.get(id)
     return user.settings
 
+
 @app.patch("/me/settings",
-response_model=Settings,
+           response_model=Settings,
            responses={
                **AuthenticationFailureException.response_model(),
                **UserNotFoundException.response_model()}
@@ -82,17 +101,6 @@ response_model=Settings,
 def update_users_settings():
     pass
 
-@app.delete('/me/settings',
-            responses={
-                **AuthenticationFailureException.response_model(),
-                **UserNotFoundException.response_model()}
-            )
-@AuthFlowRepository.auth_required
-def delete_user(jwt:str=Header(None)) -> str:
-    id = AuthFlowRepository.validate_JWT(jwt)
-    UserRepository.delete(id)
-    logger.info(f'User with {id=} was deleted')
-    return "OK"
 
 ########
 # Home #
@@ -101,4 +109,3 @@ def delete_user(jwt:str=Header(None)) -> str:
 @app.get("/")
 def root():
     return RedirectResponse("/")
-

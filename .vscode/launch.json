@@ -5,11 +5,11 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Python: Current File",
+      "name": "Worker",
       "type": "python",
-      "env": {"SP_ENV":"development"},
       "request": "launch",
-      "program": "${file}",
+      "program": "__main__.py",
+      "args": ["--worker", "--env=production"],
       "console": "integratedTerminal"
     },
     {
