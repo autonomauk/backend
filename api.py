@@ -7,6 +7,7 @@ from repositories.auth_flow import AuthFlowRepository
 from models.JWToken import JWToken
 from repositories.exceptions import AuthenticationFailureException, BaseAPIException, UserNotFoundException
 from models.SpotifyAuthDetails import SpotifyAuthDetailsFields
+from models.ObjectId import PydanticObjectId
 
 from typing import Optional
 from fastapi import FastAPI
@@ -71,7 +72,7 @@ def user_login_callback(code: str) -> RedirectResponse:
 @AuthFlowRepository.auth_required
 def delete_user(jwt: str = Header(None)) -> str:
     id = AuthFlowRepository.validate_JWT(jwt)
-    UserRepository.delete(id)
+    UserRepository.delete(PydanticObjectId(id))
     logger.info(f'User with {id=} was deleted')
     return "OK"
 

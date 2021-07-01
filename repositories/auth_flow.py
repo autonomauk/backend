@@ -25,6 +25,7 @@ from loguru import logger
 class AuthFlowRepository:
     @staticmethod
     def create_JWT(user:User) -> JWToken:
+        logger.debug(f"Creating JWT for {user.id=}")
         to_encode = {'id':str(user.id),'exp': datetime.utcnow() + timedelta(minutes=JWT_ACCESS_TOKEN_EXPIRE_MINUTES)}
         encoded_jwt = joseJWT.encode(to_encode, JWT_SECRET_KEY, algorithm=JWT_ALGORITHM)
         return JWToken(access_token=encoded_jwt,token_type="bearer")

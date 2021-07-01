@@ -22,7 +22,7 @@ if __name__ == "__main__":
             {
                 "sink": sys.stderr, 
                 "format": "UP {elapsed} | <level>{level: <8}</level> | PID {process} | <cyan>{file}</cyan>:<cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - <level>{message}</level>",
-                #"level":"INFO" if args.env=="production" else "DEBUG"
+                "level":"INFO" if args.env=="production" else "DEBUG"
                 }
         ]})
 

@@ -9,7 +9,7 @@
       "type": "python",
       "request": "launch",
       "program": "__main__.py",
-      "args": ["--worker", "--env=production"],
+      "args": ["--worker"],
       "console": "integratedTerminal"
     },
     {
