@@ -76,6 +76,11 @@ Users = List[User]
 
 class Test(BaseModel):
     id: Optional[PydanticObjectId] = UserFields.id
+    
+    def dict(self, *args,**kwargs):
+        d = BaseModel.dict(self, *args,**kwargs)
+        d.pop('id')
+        return d
 
     class Config:
         json_encoders = {

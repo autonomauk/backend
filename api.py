@@ -72,7 +72,7 @@ def user_login_callback(code: str) -> RedirectResponse:
 @AuthFlowRepository.auth_required
 def delete_user(jwt: str = Header(None)) -> str:
     id = AuthFlowRepository.validate_JWT(jwt)
-    UserRepository.delete(PydanticObjectId(id))
+    UserRepository.delete(PydanticObjectId.validate(id))
     logger.info(f'User with {id=} was deleted')
     return "OK"
 

@@ -48,8 +48,7 @@ class PydanticObjectId(ObjectId):
             valid_uuid4 = False
 
         # Current schema
-        valid_objectid = ObjectId.is_valid(v)
-            
+        valid_objectid = ObjectId.is_valid(v)            
             
         if valid_objectid or valid_uuid4:
             return cls(v)
