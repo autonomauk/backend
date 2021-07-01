@@ -1,4 +1,5 @@
 from logging import info
+from bson.objectid import ObjectId
 import dateutil.parser
 import datetime
 import time
@@ -48,6 +49,7 @@ def SpotiCronRunner():
     logger.info(f"Start of SpotiCronRunner with {len(users)} users")
     
     for user in users:
+        logger.debug(f"Running for {user.id=}")
         try:
             SpotiCronPerUser(user, playlist_name)
         except SpotifyException as e:
