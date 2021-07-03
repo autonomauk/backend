@@ -13,15 +13,13 @@ from starlette.responses import RedirectResponse
 import inspect
 from config import *
 
+from loguru import logger
+
 import requests
 import base64
 
 from jose import jwt as joseJWT
 from jose import JWTError as joseJWTError
-
-
-
-from loguru import logger
 
 class AuthFlowRepository:
     @staticmethod

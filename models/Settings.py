@@ -1,4 +1,3 @@
-from typing import List, Optional
 from pydantic import BaseModel
 from pydantic.fields import Field 
 from enum import Enum

@@ -1,5 +1,4 @@
 from bson import ObjectId
-from loguru import logger
 from pydantic.json import ENCODERS_BY_TYPE
 
 from uuid import UUID

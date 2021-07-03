@@ -51,5 +51,4 @@ class User(TimedBaseModel):
         d.pop('id')
         return d
 
-
 Users = List[User]

@@ -104,7 +104,6 @@ def read_users_settings(jwt: str = Header(None)):
 def update_users_settings():
     pass
 
-
 ########
 # Home #
 ########

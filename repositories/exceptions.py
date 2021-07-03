@@ -59,9 +59,3 @@ class AuthenticationFailureException(BaseAPIException):
 
 class SpotifyAuthenticationFailureException(AuthenticationFailureException):
     message = "Failure to authenticate with Spotify"
-
-def get_exception_responses(*args: Type[BaseAPIException]) -> dict:
-    responses = dict()
-    for cls in args:
-        responses.update(cls.response_model())
-    return responses
