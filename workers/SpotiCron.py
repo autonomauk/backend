@@ -76,7 +76,7 @@ def SpotiCronPerUser(user: User, playlist_name: str):
         user.spotifyAuthDetails = SpotifyAuthDetails(**token_info)
         UserRepository.update(user.id, user)
 
-    spotify = spotipy.Spotify(user.spotifyAuthDetails.access_token)
+    spotify = spotipy.Spotify(user.spotifyAuthDetails.access_token, requests_timeout=40)
 
     # Try to find playlist
     playlists: Playlists = []
