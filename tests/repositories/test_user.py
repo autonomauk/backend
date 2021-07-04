@@ -1,23 +1,26 @@
-from repositories.exceptions import UserNotFoundException
-from models.ObjectId import PydanticObjectId
-import pytest
+import copy
 import datetime
 from time import sleep
 
-from repositories.user import UserRepository
+import pytest
+
+from models.ObjectId import PydanticObjectId
 from models.User import User, Users
-
+from repositories.exceptions import UserNotFoundException
+from repositories.user import UserRepository
 from utils import users_collection
-
-import copy
 
 STATIC_USER_DICT = {
     "_id": str(PydanticObjectId()),
     "createdAt": datetime.datetime.fromtimestamp(1625140392353/1000),
     "updatedAt": datetime.datetime.fromtimestamp(1625162913532/1000),
     "spotifyAuthDetails": {
-        "access_token": "BQCXEA-w453XFLYHJRc7ekgTSgfS5zoJMPS484NWoqupGuZz4xdtsS75t6ykvvy38Ww-bo42q5oGKIl4wWLcbptoB2zr7CUwl-7bXUgErcvxwaY8u3vl6im5s62oBzGAG7IOe3LoX2PdydJCaOrrTLKfwuwjNv2kQ3A-NMwLBzdYZJronCOw2At6pRa6CLFfriibOQXJyMxzzDXOos_mZjYwsNDWbY8BvNrpNhopFfnT",
-        "refresh_token": "AQALYnPy0bgykbbcudCVZ0AbyAIWLN6mXregSmMSjnmzAjjHUiKqxfBKGTwrsBUo3bVCRcXwO7u0srC5FII6zphK4aXxCUDlYmMk3Yuy6G95pIZyTYFeo-CdFE8W85Pb-Os",
+        "access_token": "BQCXEA-w453XFLYHJRc7ekgTSgfS5zoJMPS484NWoqupGuZz4xdtsS75t6ykvvy3"+\
+                        "8Ww-bo42q5oGKIl4wWLcbptoB2zr7CUwl-7bXUgErcvxwaY8u3vl6im5s62oBzGA"+\
+                        "G7IOe3LoX2PdydJCaOrrTLKfwuwjNv2kQ3A-NMwLBzdYZJronCOw2At6pRa6CLFf"+\
+                        "riibOQXJyMxzzDXOos_mZjYwsNDWbY8BvNrpNhopFfnT",
+        "refresh_token": "AQALYnPy0bgykbbcudCVZ0AbyAIWLN6mXregSmMSjnmzAjjHUiKqxfBKGTwrsBU"+\
+                         "o3bVCRcXwO7u0srC5FII6zphK4aXxCUDlYmMk3Yuy6G95pIZyTYFeo-CdFE8W85Pb-Os",
         "expires_in":  "3600",
         "expires_at":  datetime.datetime.fromtimestamp(1625166513000/1000),
         "token_type": "Bearer"
@@ -28,6 +31,10 @@ STATIC_USER_DICT = {
     }
 }
 
+# pylint was complaingin about func(user) being overwritten in functions as an arg.
+# However, this is exactly how pytest uses fixtures. Hence we disable it here.
+
+# pylint:disable=redefined-outer-name
 
 @pytest.fixture()
 def user():
@@ -43,8 +50,8 @@ def user():
 
 class TestUserRepository:
     def test_type_checking(self, user: User):
-        for func in [UserRepository.get, 
-                     UserRepository.delete, 
+        for func in [UserRepository.get,
+                     UserRepository.delete,
                      lambda x: UserRepository.update(x, user),
                      lambda x: UserRepository.update(PydanticObjectId(), x),
                      UserRepository.create,
@@ -55,17 +62,17 @@ class TestUserRepository:
                 func(100)
 
     def test_create(self, user: User):
-        test_req_before_creation = users_collection.find_one({'_id':user.id})
-        assert test_req_before_creation is None        
+        test_req_before_creation = users_collection.find_one({'_id': user.id})
+        assert test_req_before_creation is None
 
         UserRepository.create(user)
 
-        test_req_after_creation = users_collection.find_one({'_id':user.id})
+        test_req_after_creation = users_collection.find_one({'_id': user.id})
         assert test_req_after_creation is not None
         assert user.dict() == test_req_after_creation
-    
+
     def test_get(self, user: User):
-        UserRepository.create(user) # Assume this works because of testing
+        UserRepository.create(user)  # Assume this works because of testing
 
         # Get the user
         got_user: User = UserRepository.get(user.id)
@@ -74,7 +81,8 @@ class TestUserRepository:
         assert got_user.dict() == user.dict()
 
         # Edit the entry to check this test isn't flawed
-        users_collection.find_one_and_update({'_id':user.id}, {"$set":{"user_id":"thisisnotwhatyouwereexpecting"}})
+        users_collection.find_one_and_update(
+            {'_id': user.id}, {"$set": {"user_id": "thisisnotwhatyouwereexpecting"}})
 
         # Get user again
         got_user: User = UserRepository.get(user.id)
@@ -94,19 +102,19 @@ class TestUserRepository:
             id = PydanticObjectId()
             UserRepository.get(id)
 
-
     def test_update(self, user: User):
-        UserRepository.create(user) # Assume this works because of testing
+        UserRepository.create(user)  # Assume this works because of testing
 
         # Update user
-        edited_user:User= copy.deepcopy(user) # otherwise edited_user is just a reference to user
+        # otherwise edited_user is just a reference to user
+        edited_user: User = copy.deepcopy(user)
         edited_user.user_id = "updated_uid"
-        edited_user_dict:dict=edited_user.dict()
+        edited_user_dict: dict = edited_user.dict()
         sleep(0.5)
-        UserRepository.update(user.id,edited_user)
+        UserRepository.update(user.id, edited_user)
 
-        got_edited_user:User = UserRepository.get(edited_user.id)
-        got_edited_user_dict:dict = got_edited_user.dict()
+        got_edited_user: User = UserRepository.get(edited_user.id)
+        got_edited_user_dict: dict = got_edited_user.dict()
 
         got_edited_user_dict.pop('updatedAt')
         edited_user_dict.pop('updatedAt')
@@ -115,7 +123,7 @@ class TestUserRepository:
         assert edited_user.user_id != user.user_id
 
         with pytest.raises(UserNotFoundException):
-            UserRepository.update(PydanticObjectId(),user)
+            UserRepository.update(PydanticObjectId(), user)
 
     def test_get_user_by_id(self, user: User):
         # Change name to avoid conflicts with other tests
@@ -132,14 +140,13 @@ class TestUserRepository:
         with pytest.raises(UserNotFoundException):
             UserRepository.get_by_user_id("thisdoesntexist")
 
-
         # Delete the custom user
         UserRepository.delete(user.id)
 
     def test_delete(self, user: User):
         UserRepository.create(user)
 
-        assert UserRepository.get(user.id) is not None # User exists
+        assert UserRepository.get(user.id) is not None  # User exists
 
         # Delete user
         UserRepository.delete(user.id)
@@ -164,7 +171,8 @@ class TestUserRepository:
 
         users: Users = UserRepository.list()
 
-        # Create 2 sets holding ALL user id's. Find difference and if that is False (i.e. empty) then we have found all users
-        assert not set([u.id for u in users]) - set([user1.id,user2.id])
+        # Create 2 sets holding ALL user id's. Find difference and if that is 
+        # False (i.e. empty) then we have found all users
+        assert not set([u.id for u in users]) - set([user1.id, user2.id])
         assert len(users) == 2
         assert all((isinstance(f, User) for f in users))

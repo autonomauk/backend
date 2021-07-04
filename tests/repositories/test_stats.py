@@ -6,6 +6,10 @@ from repositories.stats import StatsRepository
 from models.Stats import RunTimeStat, SpotifyRequestCalledStat, UserCreationStat, UserDeletionStat
 from utils import stats_collection
 
+# pylint was complaingin about func(run_time) being overwritten in functions as an arg.
+# However, this is exactly how pytest uses fixtures. Hence we disable it here.
+
+# pylint:disable=redefined-outer-name
 
 @pytest.fixture
 def run_time():
@@ -84,4 +88,7 @@ class TestStatsRepository:
 
         # tear down
         assert stats_collection.delete_one(
-            {"stat": got_spotify_request_called.stat, "createdAt": got_spotify_request_called.createdAt}) is not None
+            {
+                "stat": got_spotify_request_called.stat, 
+                "createdAt": got_spotify_request_called.createdAt
+            }) is not None

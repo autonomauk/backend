@@ -1,5 +1,5 @@
 import pymongo
-from utils.mongo import *
+from utils.mongo import client, db, users_collection, stats_collection
 
 class TestMongo:
     def test_types(self):
@@ -12,5 +12,5 @@ class TestMongo:
         client.server_info()
 
     def test_collections_are_correct(self):
-        assert users_collection.name is "users"
-        assert stats_collection.name is "stats"
+        assert users_collection.name == "users"
+        assert stats_collection.name == "stats"

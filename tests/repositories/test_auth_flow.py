@@ -1,17 +1,16 @@
 import datetime
 import inspect
-from models.SpotifyAuthDetails import SpotifyAuthDetailsFields
 
 from starlette.responses import RedirectResponse
 from fastapi import status as statuscode
-
-from repositories.exceptions import AuthenticationFailureException, SpotifyAuthenticationFailureException
 import pytest
 
+from repositories.exceptions import (AuthenticationFailureException, 
+                                    SpotifyAuthenticationFailureException)
+from repositories.auth_flow import AuthFlowRepository
 from models.ObjectId import PydanticObjectId
 from models.User import User
 from models.JWToken import JWToken
-from repositories.auth_flow import AuthFlowRepository
 import config
 
 STATIC_USER_DICT = {
@@ -50,13 +49,18 @@ class TestAuthFlowRepository:
             AuthFlowRepository.validate_JWT(jwt_str=JWT_WITHOUT_ID)
     
     def test_auth_required(self):
+        # pylint:disable=unexpected-keyword-arg
+        # pylint:disable=function-redefined
+
+
+
         # No normal args
         @AuthFlowRepository.auth_required
         def handler():
             return 1
-        
+
         args = inspect.signature(handler).parameters
-        
+
         assert "jwt" in args
         assert len(args) == 1
 
@@ -71,14 +75,14 @@ class TestAuthFlowRepository:
             return x
 
         args = inspect.signature(handler).parameters
-        
+
         assert "jwt" in args
         assert len(args) == 2
 
         with pytest.raises(AuthenticationFailureException):
             handler(1)
 
-        assert handler(x=2, jwt=JWT_VALID) == 2   
+        assert handler(x=2, jwt=JWT_VALID) == 2
 
         # JWT already as arg
         @AuthFlowRepository.auth_required
@@ -86,10 +90,10 @@ class TestAuthFlowRepository:
             return jwt
 
         args = inspect.signature(handler).parameters
-        
+
         assert "jwt" in args
         assert len(args) == 1
-        
+
         with pytest.raises(AuthenticationFailureException):
             handler(jwt=1)
         with pytest.raises(AuthenticationFailureException):
@@ -102,7 +106,7 @@ class TestAuthFlowRepository:
 
         assert isinstance(rr, RedirectResponse)
         assert rr.status_code == statuscode.HTTP_307_TEMPORARY_REDIRECT
-        
+
         url: str = rr.headers['location']
 
         assert "accounts.spotify.com/authorize" in url

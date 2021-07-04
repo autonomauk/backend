@@ -1,9 +1,16 @@
-from starlette.responses import JSONResponse
-from repositories.exceptions import BaseAPIException
-from  models.errors import BaseError
+import json
+
 import pytest
 from fastapi import status as statuscode
-import json
+from starlette.responses import JSONResponse
+
+from repositories.exceptions import BaseAPIException
+from  models.errors import BaseError
+
+# pylint was complaingin about func(run_time) being overwritten in functions as an arg.
+# However, this is exactly how pytest uses fixtures. Hence we disable it here.
+
+# pylint:disable=redefined-outer-name
 
 @pytest.fixture
 def base_api_exception():
