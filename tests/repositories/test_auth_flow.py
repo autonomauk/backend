@@ -47,12 +47,10 @@ class TestAuthFlowRepository:
             AuthFlowRepository.validate_JWT(jwt_str=JWT_SIGNED_WTIH_FOREIGN_KEY)
         with pytest.raises(AuthenticationFailureException):
             AuthFlowRepository.validate_JWT(jwt_str=JWT_WITHOUT_ID)
-    
+
     def test_auth_required(self):
         # pylint:disable=unexpected-keyword-arg
         # pylint:disable=function-redefined
-
-
 
         # No normal args
         @AuthFlowRepository.auth_required
