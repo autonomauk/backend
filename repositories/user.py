@@ -1,10 +1,9 @@
 from bson.objectid import ObjectId
-from loguru import logger
-from pymongo import collection, cursor
-from repositories.exceptions import UserNotFoundException
-from utils import users_collection,get_time,get_uuid
+
+from utils import users_collection, get_time
 from models.User import User, Users
 from models.ObjectId import PydanticObjectId
+from repositories.exceptions import UserNotFoundException
 
 class UserRepository:
     @staticmethod
@@ -19,6 +18,9 @@ class UserRepository:
 
     @staticmethod
     def get_by_user_id(user_id:str):
+        if not isinstance(user_id, str):
+            raise ValueError(f"user_id is type {type(user_id)} and not str")
+
         document = users_collection.find_one({'user_id':user_id})
         if not document:
             raise UserNotFoundException(identifier=user_id)
@@ -37,16 +39,17 @@ class UserRepository:
         document = create.dict()
         results = users_collection.insert_one(document)
         assert results.acknowledged
-
-        return UserRepository.get(document['_id'])
+        return create
 
     @staticmethod
     def update(id: PydanticObjectId, update: User):
         if not isinstance(id, ObjectId):
             raise ValueError(f"id is type {type(id)} and not ObjectId")
+        if not isinstance(update, User):
+            raise ValueError(f"id is type {type(id)} and not User")
         
-        update.updatedAt = get_time()
         document = update.dict()
+        document['updatedAt'] = get_time()
         results = users_collection.update_one({'_id':id}, {"$set":document})
         if not results.modified_count:
             raise UserNotFoundException(identifier=id)

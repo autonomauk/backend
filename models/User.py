@@ -48,6 +48,7 @@ class User(TimedBaseModel):
 
     def dict(self, *args,**kwargs):
         d = TimedBaseModel.dict(self, *args,**kwargs)
+        d['_id'] = d['id']
         d.pop('id')
         return d
 

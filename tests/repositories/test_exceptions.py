@@ -1,6 +1,6 @@
-from logging import exception
-from repositories.exceptions import *
-import models.errors as errors
+from starlette.responses import JSONResponse
+from repositories.exceptions import BaseAPIException
+from  models.errors import BaseError
 import pytest
 from fastapi import status as statuscode
 import json
@@ -14,7 +14,7 @@ class TestBaseAPIException:
         exception: BaseAPIException = base_api_exception
         assert exception.message == "Generic error"
         assert exception.code == statuscode.HTTP_500_INTERNAL_SERVER_ERROR
-        assert exception.model == errors.BaseError
+        assert exception.model == BaseError
 
     def test_response_model(self):
         exception: BaseAPIException = BaseAPIException.response_model()

@@ -1,9 +1,7 @@
-from os import stat
-from typing import Type
 from fastapi import status as statuscode
 from fastapi.responses import JSONResponse
 
-from models.errors import *
+from models.errors import BaseError, BaseIdentifiedError, NotFoundError, AlreadyExistsError, AuthenticationFailure
 
 class BaseAPIException(Exception):
     message = "Generic error"
@@ -34,7 +32,7 @@ class BaseIdentifiedExcpetion(BaseAPIException):
     model = BaseIdentifiedError
 
     def __init__(self, identifier, **kwargs):
-        super().__init__(identifier=identifier,**kwargs)
+        super().__init__(identifier=str(identifier),**kwargs)
 
 class NotFoundException(BaseIdentifiedExcpetion):
     message = "The entity does not exist"

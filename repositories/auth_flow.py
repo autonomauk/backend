@@ -1,19 +1,19 @@
-from repositories.stats import StatsRepository
 import utils
-from models.errors import AuthenticationFailure
-from models.JWToken import JWToken
-from typing import Optional
 from fastapi import Header
 from datetime import timedelta,datetime
-from models.User import User
-from models.SpotifyAuthDetails import SpotifyAuthDetails
-from repositories.exceptions import AuthenticationFailureException, SpotifyAuthenticationFailureException, UserNotFoundException
-from repositories.user import UserRepository
 from starlette.responses import RedirectResponse
 import inspect
-from config import *
 
+from config import *
 from loguru import logger
+
+from models.JWToken import JWToken
+from models.User import User
+from models.SpotifyAuthDetails import SpotifyAuthDetails
+
+from repositories.exceptions import AuthenticationFailureException, SpotifyAuthenticationFailureException, UserNotFoundException
+from repositories.user import UserRepository
+from repositories.stats import StatsRepository
 
 import requests
 import base64
@@ -32,7 +32,7 @@ class AuthFlowRepository:
     @staticmethod
     def validate_JWT(jwt_str:str) -> str:
         try:
-            payload = joseJWT.decode(jwt_str, JWT_SECRET_KEY, algorithms=[JWT_ALGORITHM])
+            payload = joseJWT.decode(str(jwt_str), JWT_SECRET_KEY, algorithms=[JWT_ALGORITHM])
             id: str = payload.get("id")
             if id is None:
                 raise AuthenticationFailureException()
@@ -45,7 +45,7 @@ class AuthFlowRepository:
         # Add jwt to the handler, otherwise just check the jwt
         if "jwt" not in inspect.signature(handler).parameters:
             def wrapper(*args,jwt: str = Header(None), **kwargs):
-                if jwt is None:
+                if str(jwt) == str(Header(None)):
                     raise AuthenticationFailureException()
                 AuthFlowRepository.validate_JWT(jwt)
                 return handler(*args, **kwargs)
@@ -83,6 +83,7 @@ class AuthFlowRepository:
 
     @staticmethod
     def login_callback(code: str) -> RedirectResponse:
+        # Minimal testing coverage as this is a pretty integrated system with spotify. Would include a lot of faff to test. cba for now
         str_token = f"{SPOTIFY_CLIENT_ID}:{SPOTIFY_CLIENT_SECRET}"
         basic_token_bytes = base64.urlsafe_b64encode(str_token.encode("utf-8"))
         basic_token_str = str(basic_token_bytes, "utf-8")
