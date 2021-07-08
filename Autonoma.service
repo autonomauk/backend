@@ -1,16 +1,16 @@
 [Unit]
-Description=SpotifyPlaylister API Worker
+Description=Autonoma API Worker
 
 [Service]
-ExecStart=python3 /home/www/SpotifyPlaylister/backend --%I --env production
-WorkingDirectory=/home/www/SpotifyPlaylister/backend
+ExecStart=python3 /home/www/Autonoma/backend --%I --env production
+WorkingDirectory=/home/www/Autonoma/backend
 Restart=always
 # Restart service after 10 seconds if python service crashes
 RestartSec=10
 # Output to syslog
 StandardOutput=journal
 StandardError=journal
-SyslogIdentifier=spotify-playlister
+SyslogIdentifier=autonoma
 User=www
 Group=www
 

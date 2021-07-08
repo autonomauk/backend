@@ -12,7 +12,7 @@ from repositories.user import UserRepository
 from models.SpotifyAuthDetails import SpotifyAuthDetails
 from models.User import User, Users
 from models.Stats import RunTimeStat
-from config import SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET, SPOTIFY_REDIRECT_URI, SP_WEBSITE
+from config import SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET, SPOTIFY_REDIRECT_URI, AUTONOMA_WEBSITE
 
 from .filter import TrackFilter
 from .models import Track, Tracks, Playlist, Playlists
@@ -123,7 +123,7 @@ class SpotiCronRunnerPerUser:
             self.target_playlist.name,
             public=True,
             collaborative=False,
-            description=f"Playlist created by {SP_WEBSITE}"
+            description=f"Playlist created by {AUTONOMA_WEBSITE}"
         )
 
         return Playlist(name=res['name'],id=res['id'])

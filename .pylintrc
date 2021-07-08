@@ -4,4 +4,4 @@ extension-pkg-whitelist=pydantic
 
 
 [FORMAT]
-good-names=f,g,x,y
+good-names=f,g,x,y,id
