@@ -1,3 +1,5 @@
+from models.ObjectId import PydanticObjectId
+from urllib3.response import HTTPResponse
 import utils
 from fastapi import Header
 from datetime import timedelta,datetime
@@ -99,7 +101,7 @@ class AuthFlowRepository:
             "redirect_uri": SPOTIFY_REDIRECT_URI
         }
 
-        res = requests.post(
+        res: HTTPResponse = requests.post(
             'https://accounts.spotify.com/api/token',
             headers=headers,
             data=body
@@ -109,27 +111,31 @@ class AuthFlowRepository:
             res['expires_at'] = timedelta( seconds= res['expires_in']) + utils.get_time()
             spotifyAuthDetails = SpotifyAuthDetails(**res)
 
-
-            res = requests.get("https://api.spotify.com/v1/me", headers={
+            res: HTTPResponse = requests.get("https://api.spotify.com/v1/me", headers={
                 "Authorization": f"Bearer {spotifyAuthDetails.access_token}"
             })
 
-            user = User(
-                spotifyAuthDetails=spotifyAuthDetails,
-                user_id=res.json()['id'])
+            if res.ok:
+                res = res.json()
+                user = User(
+                    spotifyAuthDetails=spotifyAuthDetails,
+                    user_id=res['id'])
 
-            try:
-                user: User = UserRepository.get_by_user_id(user_id=user.user_id)
-                logger.debug(f"User with id {user.id} was found")
-            except UserNotFoundException:
-                user: User = UserRepository.create(user)
-                logger.debug(f"User with id {user.id} was created")
-                StatsRepository.user_creation()
+                try:
+                    user: User = UserRepository.get_by_user_id(user_id=user.user_id)
+                    logger.debug(f"User with id {user.id} was found")
+                except UserNotFoundException:
+                    user.id = PydanticObjectId()
+                    user: User = UserRepository.create(user)
+                    logger.debug(f"User with id {user.id} was created")
+                    StatsRepository.user_creation()
 
-            jwt = AuthFlowRepository.create_JWT(user)
-            rr = RedirectResponse(f"/")
-            rr.set_cookie(key="jwt", value=jwt.access_token)
-            return rr
+                jwt = AuthFlowRepository.create_JWT(user)
+                rr = RedirectResponse("/")
+                rr.set_cookie(key="jwt", value=jwt.access_token)
+                return rr
+            else:
+                raise SpotifyAuthenticationFailureException()
 
         else:
             logger.error("Unable to authenticate.", res.text)

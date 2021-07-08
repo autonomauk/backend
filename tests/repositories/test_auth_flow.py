@@ -30,25 +30,30 @@ STATIC_USER_DICT = {
     }
 }
 
+# pylint: disable=redefined-outer-name
+@pytest.fixture
+def user():
+    yield User(**STATIC_USER_DICT)
+
 JWT_SIGNED_WTIH_FOREIGN_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwZTFkODU4ODA5MTI1MDg4MmYwM2QyMiIsImV4cCI6MTYyNTUwMDE2NX0.Om6p1ADU8kTOlYS8P2pTb0k9oGuEj45ZJJdhtdvCuKQ"
 JWT_WITHOUT_ID = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.CV_sYj7xzNERRCn3jh2wOI5-tx_oyZX5gOUphkYTuks"
-JWT_VALID = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwZTFkYjhlOTgxYzRjNWE4ZTgxOTllNCIsImV4cCI6MTYyNTUwMDk0Mn0.hr9_No4G5aBO_Grcg36C8KH1XyU-GpH566TOlM9r4Oc"
+JWT_VALID_BUT_TIMED_OUT = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwZTFkYjhlOTgxYzRjNWE4ZTgxOTllNCIsImV4cCI6MTYyNTUwMDk0Mn0.hr9_No4G5aBO_Grcg36C8KH1XyU-GpH566TOlM9r4Oc"
 
 class TestAuthFlowRepository:
-    def test_jtw_flow(self):
-        user: User = User(**STATIC_USER_DICT)
+    def test_jtw_flow(self, user: User):
         jwt: JWToken = AuthFlowRepository.create_JWT(user)
 
         decrypted_user_id = AuthFlowRepository.validate_JWT(jwt_str=jwt.access_token)
 
         assert decrypted_user_id == str(user.id)
 
-        with pytest.raises(AuthenticationFailureException):
-            AuthFlowRepository.validate_JWT(jwt_str=JWT_SIGNED_WTIH_FOREIGN_KEY)
-        with pytest.raises(AuthenticationFailureException):
-            AuthFlowRepository.validate_JWT(jwt_str=JWT_WITHOUT_ID)
+        for token in [JWT_SIGNED_WTIH_FOREIGN_KEY, JWT_WITHOUT_ID, JWT_VALID_BUT_TIMED_OUT]:
+            with pytest.raises(AuthenticationFailureException):
+                AuthFlowRepository.validate_JWT(jwt_str=token)
 
-    def test_auth_required(self):
+    def test_auth_required(self, user: User):
+        jwt: JWToken = AuthFlowRepository.create_JWT(user)
+
         # pylint:disable=unexpected-keyword-arg
         # pylint:disable=function-redefined
 
@@ -65,7 +70,7 @@ class TestAuthFlowRepository:
         with pytest.raises(AuthenticationFailureException):
             handler()
 
-        assert handler(jwt=JWT_VALID) == 1
+        assert handler(jwt=jwt.access_token) == 1
 
         # 1 normal arg
         @AuthFlowRepository.auth_required
@@ -80,7 +85,7 @@ class TestAuthFlowRepository:
         with pytest.raises(AuthenticationFailureException):
             handler(1)
 
-        assert handler(x=2, jwt=JWT_VALID) == 2
+        assert handler(x=2, jwt=jwt.access_token) == 2
 
         # JWT already as arg
         @AuthFlowRepository.auth_required
@@ -97,7 +102,7 @@ class TestAuthFlowRepository:
         with pytest.raises(AuthenticationFailureException):
             handler(jwt=None)
 
-        assert handler(jwt=JWT_VALID) == JWT_VALID
+        assert handler(jwt=jwt.access_token) == jwt.access_token
 
     def test_login(self):
         rr: RedirectResponse = AuthFlowRepository.login()

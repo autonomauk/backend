@@ -10,3 +10,8 @@ class TestPydanticObjectId:
 
         with pytest.raises(ValueError):
             PydanticObjectId.validate(KNOWN_INVALID_OBJECTID)
+
+    def test_creation(self):
+        id = PydanticObjectId()
+        assert id is not None
+        assert len(str(id)) == 24
