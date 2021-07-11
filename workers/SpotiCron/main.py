@@ -1,4 +1,7 @@
+import functools
 import time
+from utils.time import get_time
+from utils.logger import get_logger_config, log_enter_exit, timeit
 import dateutil.parser
 
 import schedule
@@ -35,17 +38,14 @@ def wrapper(*args, **kwargs):
 spotipy.Spotify._internal_call = wrapper
 # pylint:enable=protected-access
 
-
+@timeit
 def SpotiCronRunner():
     t = time.time()
     playlist_name = time.strftime('%B %y', time.localtime())
 
     users: Users = UserRepository.list()
 
-    logger.debug(f"Start of SpotiCronRunner with {len(users)} users")
-
     for user in users:
-        logger.debug(f"Running for {user.id=}")
         try:
             SpotiCronRunnerPerUser(user, playlist_name).run()
         except SpotifyException as e:
@@ -53,29 +53,37 @@ def SpotiCronRunner():
                 SpotiCronRunnerPerUser(user, playlist_name).run()
     run_time = RunTimeStat(time=time.time()-t)
     StatsRepository.spoticron_run_time(run_time)
-    logger.debug(f"End of SpotiCronRunner after {run_time.time:.2f}s")
 
 
 class SpotiCronRunnerPerUser:
-
     def __init__(self, user: User, playlist_name: str) -> None:
+        self.log = logger.bind(user_id=str(user.id))
+        self.log.debug(f"Start for {user.user_id}")
+
         self.user: User = user
         self.target_playlist: Playlist = Playlist(name=playlist_name)
 
-        if spotify_oauth.is_token_expired(self.user.spotifyAuthDetails.to_spotipy_dict()):
-            logger.debug(f"Refreshing access token for {self.user.id}")
+        if self.user.spotifyAuthDetails.expires_at < get_time(): # Compare datetime objects rather than spotipys shite non-TZ aware method
+
+            self.log.debug(f"Refreshing access token ({self.user.spotifyAuthDetails.access_token:16.16}...)")
+            
             token_info = spotify_oauth.refresh_access_token(
                 self.user.spotifyAuthDetails.refresh_token)
 
             self.user.spotifyAuthDetails = SpotifyAuthDetails(**token_info)
             UserRepository.update(self.user.id, self.user)
 
+            self.log.debug(f"Access token refreshed ({self.user.spotifyAuthDetails.access_token:16.16}...)")
+
         self.spotify = spotipy.Spotify(
             self.user.spotifyAuthDetails.access_token,
             requests_timeout=40)
 
+    def __del__(self):
+        self.log.debug("End")
+
     @logger.catch
-    def run(self):
+    def run(self) -> bool:
         # Updates self.target_playlist
         self.target_playlist = self.find_playlist()
 
@@ -83,17 +91,19 @@ class SpotiCronRunnerPerUser:
         tracks_saved = self.find_saved_tracks_filtered()
         tracks_in_playlist = self.find_songs_in_target_playlist()
 
-        tracks_to_add: Tracks = Tracks(tracks_saved) - Tracks(tracks_in_playlist)
+        tracks_to_add: Tracks = Tracks(tracks=tracks_saved) - Tracks(tracks=tracks_in_playlist)
 
         if len(tracks_to_add) > 0:
-            logger.info(
-                f"{len(tracks_to_add)} track{'s' if len(tracks_to_add) > 1 else ''}" +
-                " to add for user {user.id}")
+            self.log.info(
+                f"{len(tracks_to_add)} track{'s' if len(tracks_to_add) > 1 else ''} to add")
             self.spotify.playlist_add_items(
                 self.target_playlist.id, [track.id for track in tracks_to_add])
+            return True
         else:
-            logger.debug(f"No tracks to add for user {self.user.id}")
+            self.log.debug("No tracks to add")
+            return False
 
+    @timeit
     def find_playlist(self) -> Playlist:
         # Try to find playlist
         playlists: Playlists = []
@@ -116,6 +126,7 @@ class SpotiCronRunnerPerUser:
             else:
                 return self.create_playlist_for_user()
 
+    @timeit
     def create_playlist_for_user(self) -> Playlist:
         # Create playlist
         res = self.spotify.user_playlist_create(
@@ -128,22 +139,37 @@ class SpotiCronRunnerPerUser:
 
         return Playlist(name=res['name'],id=res['id'])
 
+    @timeit
     def find_saved_tracks_filtered(self) -> Tracks:
         # TODO: Compare with playlist's current songs or even "last checked"
         limit = 50
         offset = 0
         saved_tracks: Tracks = []
         while True:
-            for item in self.spotify.current_user_saved_tracks(limit=limit, offset=offset)['items']:
+            self.log.trace(f"Finding saved tracks ({limit=}, {offset=}, {len(saved_tracks)=})")
+
+            current_user_saved_tracks: list = self.spotify.current_user_saved_tracks(
+                limit=limit,
+                offset=(offset:=offset+limit) # UwU using this to increment offset
+                )['items']
+
+            if len(current_user_saved_tracks) == 0:
+                return saved_tracks
+
+            for item in current_user_saved_tracks:
                 added_at = dateutil.parser.parse(item['added_at'])
+                self.log.trace(f"Song was added at {added_at}")
 
                 # TODO Change logic for different playlist schema
                 if TrackFilter.monthly(added_at):
                     saved_tracks.append(Track(**item['track']))
                 else:
+                    self.log.trace(f"Found {len(saved_tracks)} saved tracks")
                     return saved_tracks
 
-    def find_songs_in_target_playlist(self):
+    @timeit
+    def find_songs_in_target_playlist(self) -> Tracks:
+        self.log.trace(f"Finding songs in target playlist {self.target_playlist.name}")
         tracks_in_playlist: Tracks = []
         limit = 100
         offset = 0
@@ -162,11 +188,11 @@ class SpotiCronRunnerPerUser:
             if offset < total:
                 offset += limit
             else:
+                self.log.trace(f"Found {len(tracks_in_playlist)} songs in target playlist")
                 return tracks_in_playlist
 
-
 def SpotiCron():
-    logger.info("Starting SpotiCron.py")
+    logger.info("Starting SpotiCron")
     schedule.every(3).minutes.do(SpotiCronRunner)
 
     SpotiCronRunner()
