@@ -1,6 +1,5 @@
 import argparse
 import os
-from utils.logger import get_logger_config
 import uvicorn
 from loguru import logger
 
@@ -16,7 +15,8 @@ parser.add_argument("-v","--verbose", action='count', default=0, help="increase 
 if __name__ == "__main__":
     args = parser.parse_args()
     os.environ['ENV'] = args.env
-
+    
+    from utils.logger import get_logger_config
     logger.configure(**get_logger_config(args.verbose))
 
     if args.server:
