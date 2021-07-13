@@ -1,3 +1,4 @@
+from os import stat
 from models.ObjectId import PydanticObjectId
 from urllib3.response import HTTPResponse
 import utils
@@ -43,7 +44,7 @@ class AuthFlowRepository:
         return id
 
     @staticmethod
-    def auth_required(handler):
+    def auth_required_wrapper(handler):
         # Add jwt to the handler, otherwise just check the jwt
         if "jwt" not in inspect.signature(handler).parameters:
             def wrapper(*args,jwt: str = Header(None), **kwargs):
@@ -73,6 +74,14 @@ class AuthFlowRepository:
         )
         wrapper.__name__ = handler.__name__
         return wrapper
+
+    @staticmethod
+    def auth_required_dep(jwt: str = Header(None)):
+        if str(jwt) == str(Header(None)):
+            raise AuthenticationFailureException()
+        id: str =  AuthFlowRepository.validate_JWT(jwt)
+        return id
+
 
 
     @staticmethod

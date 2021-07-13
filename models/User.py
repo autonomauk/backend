@@ -1,3 +1,4 @@
+from models.music import Track
 from models.TimedBaseModel import TimedBaseModel
 from models.ObjectId import PydanticObjectId
 from models.Settings import Settings
@@ -29,6 +30,12 @@ class UserFields:
         description="User settings",
         type=Settings,
         default=Settings()
+    )
+
+    track_log: Field(
+        description="Track log",
+        type= List[Track],
+        default=[]
     )
 
 class User(TimedBaseModel):

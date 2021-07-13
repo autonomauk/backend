@@ -1,4 +1,3 @@
-import functools
 import time
 from utils.time import get_time
 from utils.logger import get_logger_config, log_enter_exit, timeit
@@ -15,10 +14,11 @@ from repositories.user import UserRepository
 from models.SpotifyAuthDetails import SpotifyAuthDetails
 from models.User import User, Users
 from models.Stats import RunTimeStat
+from models.music import Track, Tracks
 from config import SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET, SPOTIFY_REDIRECT_URI, AUTONOMA_WEBSITE
 
 from .filter import TrackFilter
-from .models import Track, Tracks, Playlist, Playlists
+from .models import Playlist, Playlists
 
 spotify_oauth = spotipy.oauth2.SpotifyOAuth(
     client_id=SPOTIFY_CLIENT_ID,
@@ -96,8 +96,11 @@ class SpotiCronRunnerPerUser:
         if len(tracks_to_add) > 0:
             self.log.info(
                 f"{len(tracks_to_add)} track{'s' if len(tracks_to_add) > 1 else ''} to add")
+            
             self.spotify.playlist_add_items(
-                self.target_playlist.id, [track.id for track in tracks_to_add])
+                self.target_playlist.id, [track.uri for track in tracks_to_add])
+            
+            UserRepository.add_tracks_to_log(self.user.id, tracks_to_add)
             return True
         else:
             self.log.debug("No tracks to add")
@@ -150,7 +153,7 @@ class SpotiCronRunnerPerUser:
 
             current_user_saved_tracks: list = self.spotify.current_user_saved_tracks(
                 limit=limit,
-                offset=(offset:=offset+limit) # UwU using this to increment offset
+                offset=offset
                 )['items']
 
             if len(current_user_saved_tracks) == 0:
@@ -162,10 +165,12 @@ class SpotiCronRunnerPerUser:
 
                 # TODO Change logic for different playlist schema
                 if TrackFilter.monthly(added_at):
-                    saved_tracks.append(Track(**item['track']))
+                    saved_tracks.append(Track.from_spotify_object(item['track']))
                 else:
                     self.log.trace(f"Found {len(saved_tracks)} saved tracks")
                     return saved_tracks
+
+            offset += limit
 
     @timeit
     def find_songs_in_target_playlist(self) -> Tracks:
@@ -182,8 +187,7 @@ class SpotiCronRunnerPerUser:
             total = result['total']
 
             for item in result['items']:
-                item = item['track']
-                tracks_in_playlist.append(Track(**item))
+                tracks_in_playlist.append(Track.from_spotify_object(item['track']))
 
             if offset < total:
                 offset += limit

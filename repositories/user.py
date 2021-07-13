@@ -1,9 +1,11 @@
 from bson.objectid import ObjectId
 
 from utils import users_collection, get_time
+from models.music import Track, Tracks
 from models.User import User, Users
 from models.ObjectId import PydanticObjectId
 from repositories.exceptions import UserNotFoundException
+
 
 class UserRepository:
     @staticmethod
@@ -11,17 +13,17 @@ class UserRepository:
         if not isinstance(id, ObjectId):
             raise ValueError(f"id is type {type(id)} and not ObjectId")
 
-        document = users_collection.find_one({'_id':id})
+        document = users_collection.find_one({'_id': id})
         if not document:
             raise UserNotFoundException(identifier=id)
         return User(**document)
 
     @staticmethod
-    def get_by_user_id(user_id:str):
+    def get_by_user_id(user_id: str):
         if not isinstance(user_id, str):
             raise ValueError(f"user_id is type {type(user_id)} and not str")
 
-        document = users_collection.find_one({'user_id':user_id})
+        document = users_collection.find_one({'user_id': user_id})
         if not document:
             raise UserNotFoundException(identifier=user_id)
         return User(**document)
@@ -47,10 +49,10 @@ class UserRepository:
             raise ValueError(f"id is type {type(id)} and not ObjectId")
         if not isinstance(update, User):
             raise ValueError(f"id is type {type(id)} and not User")
-        
+
         document = update.dict()
         document['updatedAt'] = get_time()
-        results = users_collection.update_one({'_id':id}, {"$set":document})
+        results = users_collection.update_one({'_id': id}, {"$set": document})
         if not results.modified_count:
             raise UserNotFoundException(identifier=id)
 
@@ -59,6 +61,36 @@ class UserRepository:
         if not isinstance(id, ObjectId):
             raise ValueError(f"id is type {type(id)} and not ObjectId")
 
-        result = users_collection.delete_one({'_id':PydanticObjectId(id)})
+        result = users_collection.delete_one({'_id': PydanticObjectId(id)})
         if not result.deleted_count:
             raise UserNotFoundException(identifier=id)
+
+    @staticmethod
+    def add_tracks_to_log(id: PydanticObjectId, tracks: Tracks):
+        if not isinstance(id, ObjectId):
+            raise ValueError(f"id is type {type(id)} and not ObjectId")
+        if not isinstance(tracks, Tracks):
+            raise ValueError(f"tracks is type {type(tracks)} and not Tracks")
+
+        document = tracks.dict()
+        results = users_collection.update_one(
+            {'_id': id}, {'$push': {'track_log': {'$each': document}}})
+        if not results.modified_count:
+            raise UserNotFoundException(identifier=id)
+
+    @staticmethod
+    def read_track_log(id: PydanticObjectId) -> Tracks:
+        # TODO Implement pagenation
+        if not isinstance(id, ObjectId):
+            raise ValueError(f"id is type {type(id)} and not ObjectId")
+
+        cursor = users_collection.find_one(
+            {'_id': id},
+            {'_id': 0, 'track_log': 1})
+
+        if not cursor:
+            raise UserNotFoundException(identifier=id)
+
+        result: Tracks = [Track(**f) for f in cursor['track_log']]
+
+        return result
