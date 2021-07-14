@@ -1,4 +1,5 @@
 import copy
+from models.music.Track import Track, Tracks
 from time import sleep
 
 import pytest
@@ -9,7 +10,7 @@ from repositories.exceptions import UserNotFoundException
 from repositories.user import UserRepository
 from utils import users_collection
 
-from tests.variables import STATIC_USER_DICT
+from tests.variables import USER_DICT, TRACK_DICT_1, TRACK_DICT_2
 
 # pylint was complaingin about func(user) being overwritten in functions as an arg.
 # However, this is exactly how pytest uses fixtures. Hence we disable it here.
@@ -19,14 +20,14 @@ from tests.variables import STATIC_USER_DICT
 @pytest.fixture()
 def user():
     # Startup code
-    user = User(**STATIC_USER_DICT)
+    user = User(**USER_DICT())
+    id: PydanticObjectId = copy.deepcopy(user.id)
     yield user
     # Cleanup code
     try:
-        UserRepository.delete(user.id)
+        UserRepository.delete(id)
     except UserNotFoundException:
         pass
-
 
 class TestUserRepository:
     def test_type_checking(self, user: User):
@@ -35,7 +36,10 @@ class TestUserRepository:
                      lambda x: UserRepository.update(x, user),
                      lambda x: UserRepository.update(PydanticObjectId(), x),
                      UserRepository.create,
-                     UserRepository.get_by_user_id
+                     UserRepository.get_by_user_id,
+                     lambda x: UserRepository.add_tracks_to_log(PydanticObjectId(), x),
+                     lambda x: UserRepository.add_tracks_to_log(x, []),
+                     UserRepository.read_track_log
                      ]:
 
             with pytest.raises(ValueError):
@@ -156,3 +160,20 @@ class TestUserRepository:
         assert not set([u.id for u in users]) - set([user1.id, user2.id])
         assert len(users) == 2
         assert all((isinstance(f, User) for f in users))
+
+    def test_add_tracks_to_log(self, user: User):
+        UserRepository.create(user)
+
+        tracks = Tracks([Track(**TRACK_DICT_1), Track(**TRACK_DICT_2)])
+
+        UserRepository.add_tracks_to_log(user.id, tracks)
+
+        read_user: User = UserRepository.get(user.id)
+        
+        for f,g in zip(tracks, read_user.track_log):
+            # mongoDB rounds dt to ms
+            delattr(f,'createdAt')
+            delattr(f,'updatedAt')
+            delattr(g,'createdAt')
+            delattr(g,'updatedAt')
+            assert f == g 

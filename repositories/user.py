@@ -1,3 +1,4 @@
+from typing import List
 from bson.objectid import ObjectId
 
 from utils import users_collection, get_time
@@ -61,7 +62,7 @@ class UserRepository:
         if not isinstance(id, ObjectId):
             raise ValueError(f"id is type {type(id)} and not ObjectId")
 
-        result = users_collection.delete_one({'_id': PydanticObjectId(id)})
+        result = users_collection.delete_one({'_id': id})
         if not result.deleted_count:
             raise UserNotFoundException(identifier=id)
 
@@ -69,10 +70,16 @@ class UserRepository:
     def add_tracks_to_log(id: PydanticObjectId, tracks: Tracks):
         if not isinstance(id, ObjectId):
             raise ValueError(f"id is type {type(id)} and not ObjectId")
-        if not isinstance(tracks, Tracks):
-            raise ValueError(f"tracks is type {type(tracks)} and not Tracks")
 
-        document = tracks.dict()
+        if isinstance(tracks, (set,list, tuple)):
+            for f in tracks:
+                if not isinstance(f, Track):
+                    raise ValueError(f"track is type {type(f)} and not {type(Track)}")
+        else:
+            raise ValueError(f"type {type(tracks)} is not iterable")
+
+
+        document: List[dict] = [f.dict() for f in tracks]
         results = users_collection.update_one(
             {'_id': id}, {'$push': {'track_log': {'$each': document}}})
         if not results.modified_count:

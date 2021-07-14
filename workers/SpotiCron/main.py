@@ -90,8 +90,9 @@ class SpotiCronRunnerPerUser:
         # Find all saved tracks for this month
         tracks_saved = self.find_saved_tracks_filtered()
         tracks_in_playlist = self.find_songs_in_target_playlist()
-
-        tracks_to_add: Tracks = Tracks(tracks=tracks_saved) - Tracks(tracks=tracks_in_playlist)
+        
+        diff = set([f.uri for f in tracks_saved]) - set([f.uri for f in tracks_in_playlist])
+        tracks_to_add: Tracks = Tracks([f for f in tracks_saved if f.uri in diff])
 
         if len(tracks_to_add) > 0:
             self.log.info(
@@ -147,7 +148,7 @@ class SpotiCronRunnerPerUser:
         # TODO: Compare with playlist's current songs or even "last checked"
         limit = 50
         offset = 0
-        saved_tracks: Tracks = []
+        saved_tracks: list[Track] = []
         while True:
             self.log.trace(f"Finding saved tracks ({limit=}, {offset=}, {len(saved_tracks)=})")
 
@@ -168,14 +169,14 @@ class SpotiCronRunnerPerUser:
                     saved_tracks.append(Track.from_spotify_object(item['track']))
                 else:
                     self.log.trace(f"Found {len(saved_tracks)} saved tracks")
-                    return saved_tracks
+                    return Tracks(saved_tracks)
 
             offset += limit
 
     @timeit
     def find_songs_in_target_playlist(self) -> Tracks:
         self.log.trace(f"Finding songs in target playlist {self.target_playlist.name}")
-        tracks_in_playlist: Tracks = []
+        tracks_in_playlist: list[Track] = []
         limit = 100
         offset = 0
         total = None
@@ -193,7 +194,7 @@ class SpotiCronRunnerPerUser:
                 offset += limit
             else:
                 self.log.trace(f"Found {len(tracks_in_playlist)} songs in target playlist")
-                return tracks_in_playlist
+                return Tracks(tracks_in_playlist)
 
 def SpotiCron():
     logger.info("Starting SpotiCron")

@@ -21,22 +21,4 @@ class Track(TimedBaseModel):
 
         return cls(**track)
 
-class Tracks(BaseModel):
-    tracks: List[Track]
-
-    def __getitem__(self, item):
-        return self.tracks[item]
-    
-    def __sub__(self,other: List[Track]):
-        difference = set([f.uri for f in self.tracks]) - set([f.uri for f in other.tracks])
-        return Tracks(tracks=[f for f in self.tracks if f.uri in difference])
-
-    def __len__(self) -> int:
-        return len(self.tracks)
-
-    def __iter__(self):
-        return iter(self.tracks)
-
-    def dict(self):
-        d = super().dict()
-        return d['tracks']
+Tracks = list[Track]

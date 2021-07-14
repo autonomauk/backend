@@ -14,11 +14,11 @@ router = APIRouter(
     tags=['me'],
     responses={
         **AuthenticationFailureException.response_model(),
-        **UserNotFoundException.response_model()}
+        **UserNotFoundException.response_model()},
 )
 
 @router.delete('/')
-def delete_user(id: str = Depends(AuthFlowRepository.auth_required_dep)) -> str:
+def delete_user(str = Depends(AuthFlowRepository.auth_required_dep)) -> str:
     UserRepository.delete(PydanticObjectId.validate(id))
     logger.info(f'User with {id=} was deleted')
     StatsRepository.user_deletion()

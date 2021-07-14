@@ -1,4 +1,5 @@
 import datetime
+from tests.variables import TRACK_DICT_1
 from models.ObjectId import PydanticObjectId
 
 from loguru import logger
@@ -7,14 +8,15 @@ from repositories.user import UserRepository
 
 import spotipy
 from utils.time import get_time
-from tests.variables import STATIC_USER_DICT
+from tests.variables import USER_DICT
 from models.User import User
 from workers.SpotiCron.main import SpotiCronRunnerPerUser
 import pytest
 
-from workers.SpotiCron.models import Playlist, Playlists, Track, Tracks
-from workers.SpotiCron.filter import TrackFilter
+from models.music import Track, Tracks
 
+from workers.SpotiCron.models import Playlist, Playlists
+from workers.SpotiCron.filter import TrackFilter
 
 class TestTrackFilter:
     def test_monthly(self):
@@ -45,37 +47,13 @@ class TestTrackFilter:
         assert abs(now-now_dt) < datetime.timedelta(seconds=1)
         assert abs(now_dt-now) < datetime.timedelta(seconds=1)
 
-
-class TestModels:
-    def test_tracks(self):
-        shared_track = Track(id="foo")
-        new_track = Track(id="bar")
-        tracks1 = Tracks(tracks=[shared_track])
-        tracks2 = Tracks(tracks=[new_track, shared_track])
-
-        diff_tracks = tracks1 - tracks1
-        assert len(diff_tracks) == 0
-
-        diff_tracks = tracks2 - tracks1
-        assert len(diff_tracks) == 1
-        assert diff_tracks[0] == new_track
-
-        diff_tracks = tracks1 - tracks2
-        assert len(diff_tracks) == 0
-
-        with pytest.raises(TypeError):
-            tracks1 + tracks1  # pylint: disable=pointless-statement
-
-        assert tracks1[0] == shared_track
-        assert tracks2[1] == shared_track
-
 # pylint: disable=redefined-outer-name
 
 
 @pytest.fixture
 def spoticron_runner():
     playlist_name: str = str(PydanticObjectId())
-    user: User = User(**STATIC_USER_DICT)
+    user: User = User(**USER_DICT())
 
     UserRepository.create(user)
 
@@ -92,9 +70,9 @@ class TestSpotiCronRunnerPerUser:
 
         assert spoticron_runner.user.spotifyAuthDetails.expires_at.replace(
             tzinfo=None) >= get_time()
-        assert spoticron_runner.user.spotifyAuthDetails.access_token is not STATIC_USER_DICT[
+        assert spoticron_runner.user.spotifyAuthDetails.access_token is not USER_DICT()[
             'spotifyAuthDetails']['access_token']
-        assert spoticron_runner.user.spotifyAuthDetails.refresh_token is STATIC_USER_DICT[
+        assert spoticron_runner.user.spotifyAuthDetails.refresh_token is USER_DICT()[
             'spotifyAuthDetails']['refresh_token']
 
         updated_user: User = UserRepository.get(spoticron_runner.user.id)
@@ -132,13 +110,13 @@ class TestSpotiCronRunnerPerUser:
         playlist: Playlist = spoticron_runner.create_playlist_for_user()
         spoticron_runner.target_playlist = playlist
 
-        track_to_add: Track = Track(id="6GPpocnUJbzMNMTJDLYCim")
+        track_to_add: Track = Track(**TRACK_DICT_1)
         spoticron_runner.spotify.playlist_add_items(
-            playlist_id=playlist.id, items=[track_to_add.id])
+            playlist_id=playlist.id, items=[track_to_add.uri])
 
         tracks: Tracks = spoticron_runner.find_songs_in_target_playlist()
         assert len(tracks) == 1
-        assert tracks[0].id == track_to_add.id
+        assert tracks[0].uri == track_to_add.uri
 
     def test_clean_up(self, spoticron_runner: SpotiCronRunnerPerUser):
         playlists: Playlists = [

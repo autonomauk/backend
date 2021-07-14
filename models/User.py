@@ -1,4 +1,4 @@
-from models.music import Track
+from models.music import Track, Tracks
 from models.TimedBaseModel import TimedBaseModel
 from models.ObjectId import PydanticObjectId
 from models.Settings import Settings
@@ -32,10 +32,10 @@ class UserFields:
         default=Settings()
     )
 
-    track_log: Field(
+    track_log = Field(
         description="Track log",
-        type= List[Track],
-        default=[]
+        type= Tracks,
+        default=Tracks()
     )
 
 class User(TimedBaseModel):
@@ -48,13 +48,15 @@ class User(TimedBaseModel):
 
     settings: Settings = UserFields.settings
 
+    track_log: Tracks = UserFields.track_log
+
     class Config:
         json_encoders = {
             PydanticObjectId: str
         }
 
-    def dict(self, *args,**kwargs):
-        d = TimedBaseModel.dict(self, *args,**kwargs)
+    def dict(self, *args, **kwargs):
+        d = super(User, self).dict(*args, **kwargs)
         d['_id'] = d['id']
         d.pop('id')
         return d
