@@ -1,4 +1,4 @@
-from models.music.Track import Tracks
+from models.music.TrackLog import TrackLogs
 from models.ObjectId import PydanticObjectId
 from repositories.user import UserRepository
 from repositories.auth_flow import AuthFlowRepository
@@ -10,8 +10,7 @@ router = APIRouter(
     tags=['track log']
 )
 
-
-@router.get('/',response_model=Tracks)
-def track_log(id: str = Depends(AuthFlowRepository.auth_required_dep)) -> Tracks:
-    tracks: Tracks = UserRepository.read_track_log(PydanticObjectId(id))
-    return tracks
+@router.get('/',response_model=TrackLogs)
+def track_log(id: str = Depends(AuthFlowRepository.auth_required_dep)) -> TrackLogs:
+    track_log: TrackLogs = UserRepository.read_track_log(PydanticObjectId(id))
+    return track_log

@@ -88,7 +88,8 @@ class UserRepository:
             raise UserNotFoundException(identifier=id)
 
     @staticmethod
-    def read_track_log(id: PydanticObjectId) -> Tracks:
+    def read_track_log(id: PydanticObjectId) -> TrackLogs:
+
         # TODO Implement pagenation
         if not isinstance(id, ObjectId):
             raise ValueError(f"id is type {type(id)} and not ObjectId")
