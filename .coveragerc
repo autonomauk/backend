@@ -1,2 +1,2 @@
 [run]
-omit = */venv/*,*/config/*,*/tests/*
+omit = */venv/*,*/config/*,*/tests/*,__main__.py

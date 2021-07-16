@@ -10,7 +10,7 @@ parser.add_argument('--migrate', action='store_true')
 
 parser.add_argument("--env", choices=['production','development'], default='development')
 
-parser.add_argument("-v","--verbose", action='count', default=0, help="increase output verbosity")
+parser.add_argument("-v","--verbose", action='count', default=1, help="increase output verbosity")
 
 if __name__ == "__main__":
     args = parser.parse_args()

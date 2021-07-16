@@ -1,8 +1,9 @@
-import functools
+from models.music.TrackLog import TrackLog
 import time
 from utils.time import get_time
-from utils.logger import get_logger_config, log_enter_exit, timeit
+from utils.logger import timeit
 import dateutil.parser
+import copy
 
 import schedule
 from loguru import logger
@@ -15,10 +16,10 @@ from repositories.user import UserRepository
 from models.SpotifyAuthDetails import SpotifyAuthDetails
 from models.User import User, Users
 from models.Stats import RunTimeStat
+from models.music import Track, Tracks, Playlist, Playlists
 from config import SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET, SPOTIFY_REDIRECT_URI, AUTONOMA_WEBSITE
 
 from .filter import TrackFilter
-from .models import Track, Tracks, Playlist, Playlists
 
 spotify_oauth = spotipy.oauth2.SpotifyOAuth(
     client_id=SPOTIFY_CLIENT_ID,
@@ -90,14 +91,18 @@ class SpotiCronRunnerPerUser:
         # Find all saved tracks for this month
         tracks_saved = self.find_saved_tracks_filtered()
         tracks_in_playlist = self.find_songs_in_target_playlist()
-
-        tracks_to_add: Tracks = Tracks(tracks=tracks_saved) - Tracks(tracks=tracks_in_playlist)
+        
+        diff = set([f.uri for f in tracks_saved]) - set([f.uri for f in tracks_in_playlist])
+        tracks_to_add: Tracks = Tracks([f for f in tracks_saved if f.uri in diff])
 
         if len(tracks_to_add) > 0:
             self.log.info(
                 f"{len(tracks_to_add)} track{'s' if len(tracks_to_add) > 1 else ''} to add")
+            
             self.spotify.playlist_add_items(
-                self.target_playlist.id, [track.id for track in tracks_to_add])
+                self.target_playlist.id, [track.uri for track in tracks_to_add])
+            
+            UserRepository.add_tracks_to_log(self.user.id, [TrackLog(track=f, playlist=self.target_playlist) for f in tracks_to_add])
             return True
         else:
             self.log.debug("No tracks to add")
@@ -119,7 +124,8 @@ class SpotiCronRunnerPerUser:
 
             for playlist in playlists:
                 if playlist.name == self.target_playlist.name:
-                    return playlist
+                    self.target_playlist = copy.deepcopy(playlist)
+                    return self.target_playlist
 
             if offset < total:
                 offset += limit
@@ -137,20 +143,20 @@ class SpotiCronRunnerPerUser:
             description=f"Playlist created by {AUTONOMA_WEBSITE}"
         )
 
-        return Playlist(name=res['name'],id=res['id'])
+        return Playlist(**res)
 
     @timeit
     def find_saved_tracks_filtered(self) -> Tracks:
         # TODO: Compare with playlist's current songs or even "last checked"
         limit = 50
         offset = 0
-        saved_tracks: Tracks = []
+        saved_tracks: list[Track] = []
         while True:
             self.log.trace(f"Finding saved tracks ({limit=}, {offset=}, {len(saved_tracks)=})")
 
             current_user_saved_tracks: list = self.spotify.current_user_saved_tracks(
                 limit=limit,
-                offset=(offset:=offset+limit) # UwU using this to increment offset
+                offset=offset
                 )['items']
 
             if len(current_user_saved_tracks) == 0:
@@ -162,15 +168,17 @@ class SpotiCronRunnerPerUser:
 
                 # TODO Change logic for different playlist schema
                 if TrackFilter.monthly(added_at):
-                    saved_tracks.append(Track(**item['track']))
+                    saved_tracks.append(Track.from_spotify_object(item['track']))
                 else:
                     self.log.trace(f"Found {len(saved_tracks)} saved tracks")
-                    return saved_tracks
+                    return Tracks(saved_tracks)
+
+            offset += limit
 
     @timeit
     def find_songs_in_target_playlist(self) -> Tracks:
         self.log.trace(f"Finding songs in target playlist {self.target_playlist.name}")
-        tracks_in_playlist: Tracks = []
+        tracks_in_playlist: list[Track] = []
         limit = 100
         offset = 0
         total = None
@@ -182,14 +190,13 @@ class SpotiCronRunnerPerUser:
             total = result['total']
 
             for item in result['items']:
-                item = item['track']
-                tracks_in_playlist.append(Track(**item))
+                tracks_in_playlist.append(Track.from_spotify_object(item['track']))
 
             if offset < total:
                 offset += limit
             else:
                 self.log.trace(f"Found {len(tracks_in_playlist)} songs in target playlist")
-                return tracks_in_playlist
+                return Tracks(tracks_in_playlist)
 
 def SpotiCron():
     logger.info("Starting SpotiCron")

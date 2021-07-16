@@ -58,7 +58,7 @@ class TestAuthFlowRepository:
         # pylint:disable=function-redefined
 
         # No normal args
-        @AuthFlowRepository.auth_required
+        @AuthFlowRepository.auth_required_wrapper
         def handler():
             return 1
 
@@ -73,7 +73,7 @@ class TestAuthFlowRepository:
         assert handler(jwt=jwt.access_token) == 1
 
         # 1 normal arg
-        @AuthFlowRepository.auth_required
+        @AuthFlowRepository.auth_required_wrapper
         def handler(x):
             return x
 
@@ -88,7 +88,7 @@ class TestAuthFlowRepository:
         assert handler(x=2, jwt=jwt.access_token) == 2
 
         # JWT already as arg
-        @AuthFlowRepository.auth_required
+        @AuthFlowRepository.auth_required_wrapper
         def handler(jwt):
             return jwt
 
