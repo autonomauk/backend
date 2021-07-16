@@ -4,7 +4,7 @@ import sys
 import time
 
 
-def get_logger_config(verbosity: int = 0):
+def get_logger_config(verbosity: int = 0): # pragma: no cover
 
     if verbosity == 0:
         LOG_LEVEL = "INFO"
@@ -49,21 +49,3 @@ def timeit(func):
 
         return result
     return wrapped
-
-
-def log_enter_exit(entrance=True, exit=True, level="DEBUG"):
-    def wrapper(func):
-        @functools.wraps(func)
-        def wrapped(*args, **kwargs):
-            logger_ = logger
-            if len(args) > 0 and "log" in dir(args[0]):
-                logger_ = args[0].log
-
-            if entrance:
-                logger_.log(level, f"Start of {func.__name__}")
-            result = func(*args,**kwargs)
-            if exit:
-                logger_.log(level, f"End of {func.__name__}")
-            return result
-        return wrapped
-    return wrapper

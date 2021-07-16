@@ -4,9 +4,8 @@ from pydantic.fields import Field
 from pydantic.main import BaseModel
 from models.music import Album
 from models.music import Artist
-from models.TimedBaseModel import TimedBaseModel
 
-class Track(TimedBaseModel):
+class Track(BaseModel):
     name: str = Field(..., example="Mr. Brightside")
     artists: list[Artist]
     album: Album

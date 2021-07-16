@@ -18,4 +18,4 @@ VOLUME ${APP_PATH}/backend:/usr/src/app
 EXPOSE 3001
 
 # Serve the app
-CMD ["python3", ".", "--server","--env","development"]
+CMD ["python3", ".", "--server","--env","development","-v"]

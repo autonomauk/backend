@@ -1,7 +1,9 @@
+from models.music.TrackLog import TrackLog
 import time
 from utils.time import get_time
-from utils.logger import get_logger_config, log_enter_exit, timeit
+from utils.logger import timeit
 import dateutil.parser
+import copy
 
 import schedule
 from loguru import logger
@@ -14,11 +16,10 @@ from repositories.user import UserRepository
 from models.SpotifyAuthDetails import SpotifyAuthDetails
 from models.User import User, Users
 from models.Stats import RunTimeStat
-from models.music import Track, Tracks
+from models.music import Track, Tracks, Playlist, Playlists
 from config import SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET, SPOTIFY_REDIRECT_URI, AUTONOMA_WEBSITE
 
 from .filter import TrackFilter
-from .models import Playlist, Playlists
 
 spotify_oauth = spotipy.oauth2.SpotifyOAuth(
     client_id=SPOTIFY_CLIENT_ID,
@@ -101,7 +102,7 @@ class SpotiCronRunnerPerUser:
             self.spotify.playlist_add_items(
                 self.target_playlist.id, [track.uri for track in tracks_to_add])
             
-            UserRepository.add_tracks_to_log(self.user.id, tracks_to_add)
+            UserRepository.add_tracks_to_log(self.user.id, [TrackLog(track=f, playlist=self.target_playlist) for f in tracks_to_add])
             return True
         else:
             self.log.debug("No tracks to add")
@@ -123,7 +124,8 @@ class SpotiCronRunnerPerUser:
 
             for playlist in playlists:
                 if playlist.name == self.target_playlist.name:
-                    return playlist
+                    self.target_playlist = copy.deepcopy(playlist)
+                    return self.target_playlist
 
             if offset < total:
                 offset += limit
@@ -141,7 +143,7 @@ class SpotiCronRunnerPerUser:
             description=f"Playlist created by {AUTONOMA_WEBSITE}"
         )
 
-        return Playlist(name=res['name'],id=res['id'])
+        return Playlist(**res)
 
     @timeit
     def find_saved_tracks_filtered(self) -> Tracks:

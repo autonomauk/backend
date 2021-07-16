@@ -10,12 +10,12 @@ import spotipy
 from utils.time import get_time
 from tests.variables import USER_DICT
 from models.User import User
+from models.music import Playlist, Playlists
 from workers.SpotiCron.main import SpotiCronRunnerPerUser
 import pytest
 
 from models.music import Track, Tracks
 
-from workers.SpotiCron.models import Playlist, Playlists
 from workers.SpotiCron.filter import TrackFilter
 
 class TestTrackFilter:

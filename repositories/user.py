@@ -1,3 +1,5 @@
+from models.music.TrackLog import TrackLog, TrackLogs
+from models.music.Playlist import Playlist
 from typing import List
 from bson.objectid import ObjectId
 
@@ -67,19 +69,19 @@ class UserRepository:
             raise UserNotFoundException(identifier=id)
 
     @staticmethod
-    def add_tracks_to_log(id: PydanticObjectId, tracks: Tracks):
+    def add_tracks_to_log(id: PydanticObjectId, track_logs: TrackLogs):
         if not isinstance(id, ObjectId):
             raise ValueError(f"id is type {type(id)} and not ObjectId")
 
-        if isinstance(tracks, (set,list, tuple)):
-            for f in tracks:
-                if not isinstance(f, Track):
-                    raise ValueError(f"track is type {type(f)} and not {type(Track)}")
+        if isinstance(track_logs, (set,list, tuple)):
+            for f in track_logs:
+                if not isinstance(f, TrackLog):
+                    raise ValueError(f"track is type {type(f)} and not {type(TrackLog)}")
         else:
-            raise ValueError(f"type {type(tracks)} is not iterable")
+            raise ValueError(f"type {type(track_logs)} is not iterable")
 
 
-        document: List[dict] = [f.dict() for f in tracks]
+        document: List[dict] = [f.dict() for f in track_logs]
         results = users_collection.update_one(
             {'_id': id}, {'$push': {'track_log': {'$each': document}}})
         if not results.modified_count:
@@ -98,6 +100,6 @@ class UserRepository:
         if not cursor:
             raise UserNotFoundException(identifier=id)
 
-        result: Tracks = [Track(**f) for f in cursor['track_log']]
+        result: TrackLogs = [TrackLog(**f) for f in cursor['track_log']]
 
         return result

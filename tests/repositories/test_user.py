@@ -1,4 +1,6 @@
 import copy
+from models.music.Playlist import Playlist
+from models.music.TrackLog import TrackLog, TrackLogs
 from models.music.Track import Track, Tracks
 from time import sleep
 
@@ -164,7 +166,7 @@ class TestUserRepository:
     def test_add_tracks_to_log(self, user: User):
         UserRepository.create(user)
 
-        tracks = Tracks([Track(**TRACK_DICT_1), Track(**TRACK_DICT_2)])
+        tracks = [TrackLog(track=f,playlist=Playlist(name="test")) for f in [Track(**TRACK_DICT_1), Track(**TRACK_DICT_2)]]
 
         UserRepository.add_tracks_to_log(user.id, tracks)
 
