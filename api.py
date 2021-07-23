@@ -12,7 +12,7 @@ import config
 
 app = FastAPI(
     title="AutonomaAPI",
-    docs_url=None if config.ENV == "production" else '/docs',
+#    docs_url=None if config.ENV == "production" else '/docs',
     redoc_url=None if config.ENV == "production" else '/redoc',
     openapi_url=None if config.ENV == "production" else '/openapi.json'
 )

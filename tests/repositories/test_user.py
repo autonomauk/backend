@@ -151,16 +151,21 @@ class TestUserRepository:
         user1: User = copy.deepcopy(user)
         user2: User = copy.deepcopy(user)
         user2.id = PydanticObjectId()
+        user2.settings.enabled = False
 
         UserRepository.create(user1)
         UserRepository.create(user2)
 
         users: Users = UserRepository.list()
-
         # Create 2 sets holding ALL user id's. Find difference and if that is 
         # False (i.e. empty) then we have found all users
         assert not set([u.id for u in users]) - set([user1.id, user2.id])
         assert len(users) == 2
+        assert all((isinstance(f, User) for f in users))
+        
+        users: Users = UserRepository.list({"settings.enabled": True})
+        assert users[0].id == user1.id
+        assert len(users) == 1
         assert all((isinstance(f, User) for f in users))
 
     def test_add_tracks_to_log(self, user: User):

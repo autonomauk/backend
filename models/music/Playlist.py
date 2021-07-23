@@ -1,3 +1,4 @@
+from models.ListModel import ListModel
 from pydantic import BaseModel
 from typing import List
 
@@ -12,4 +13,4 @@ class Playlist(BaseModel):
         else:
             return self.uri
 
-Playlists = List[Playlist]
+Playlists = list[Playlist]

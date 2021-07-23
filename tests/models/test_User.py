@@ -1,5 +1,5 @@
 from tests.variables import USER_DICT
-from models.User import User
+from models.User import User, UserFields
 import datetime
 import pytest
 

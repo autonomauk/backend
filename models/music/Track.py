@@ -1,5 +1,4 @@
-from typing import Any, List
-
+from models.ListModel import ListModel
 from pydantic.fields import Field
 from pydantic.main import BaseModel
 from models.music import Album

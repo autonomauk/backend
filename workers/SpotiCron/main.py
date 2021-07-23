@@ -44,7 +44,7 @@ def SpotiCronRunner():
     t = time.time()
     playlist_name = time.strftime('%B %y', time.localtime())
 
-    users: Users = UserRepository.list()
+    users: Users = UserRepository.list({"settings.enabled":True})
 
     for user in users:
         try:

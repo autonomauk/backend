@@ -76,11 +76,11 @@ class AuthFlowRepository:
         return wrapper
 
     @staticmethod
-    def auth_required_dep(jwt: str = Header(None)):
+    def auth_required_dep(jwt: str = Header(None)) -> PydanticObjectId:
         if str(jwt) == str(Header(None)):
             raise AuthenticationFailureException()
         id: str =  AuthFlowRepository.validate_JWT(jwt)
-        return id
+        return PydanticObjectId(id)
 
 
 

@@ -1,3 +1,4 @@
+from models.ListModel import ListModel
 from models.music import Track,Playlist
 from models.TimedBaseModel import TimedBaseModel
 

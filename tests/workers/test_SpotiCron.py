@@ -48,8 +48,6 @@ class TestTrackFilter:
         assert abs(now_dt-now) < datetime.timedelta(seconds=1)
 
 # pylint: disable=redefined-outer-name
-
-
 @pytest.fixture
 def spoticron_runner():
     playlist_name: str = str(PydanticObjectId())

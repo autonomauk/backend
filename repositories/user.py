@@ -1,5 +1,4 @@
 from models.music.TrackLog import TrackLog, TrackLogs
-from models.music.Playlist import Playlist
 from typing import List
 from bson.objectid import ObjectId
 
@@ -32,8 +31,8 @@ class UserRepository:
         return User(**document)
 
     @staticmethod
-    def list() -> Users:
-        cursor = users_collection.find()
+    def list(filter: dict={}) -> Users:
+        cursor = users_collection.find(filter)
         return [User(**document) for document in cursor]
 
     @staticmethod
