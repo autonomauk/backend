@@ -1,4 +1,3 @@
-from models.ListModel import ListModel
 from pydantic import BaseModel
 from typing import List
 
