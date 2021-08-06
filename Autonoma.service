@@ -2,8 +2,8 @@
 Description=Autonoma API Worker
 
 [Service]
-ExecStart=python3 /home/www/Autonoma/backend --%I --env production
-WorkingDirectory=/home/www/Autonoma/backend
+ExecStart=python3 /home/autonoma/Autonoma/backend --%I --env production
+WorkingDirectory=/home/autonoma/Autonoma/backend
 Restart=always
 # Restart service after 10 seconds if python service crashes
 RestartSec=10
@@ -11,8 +11,8 @@ RestartSec=10
 StandardOutput=journal
 StandardError=journal
 SyslogIdentifier=autonoma
-User=www
-Group=www
+User=autonoma
+Group=autonoma
 
 [Install]
 WantedBy=multi-user.target
