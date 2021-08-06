@@ -2,6 +2,7 @@ from repositories.exceptions import BaseAPIException
 
 from routers import login
 from routers import me
+from routers import metrics
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -36,6 +37,12 @@ app.include_router(login.router)
 ########
 
 app.include_router(me.router)
+
+###########
+# METRICS #
+############
+
+app.include_router(metrics.router)
 
 ########
 # Home #
