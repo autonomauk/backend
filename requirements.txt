@@ -43,3 +43,4 @@ uvloop==0.15.2
 watchgod==0.7
 websockets==9.1
 yarl==1.6.3
+starlette_exporter==0.10.0

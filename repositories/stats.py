@@ -1,34 +1,47 @@
+from os import stat
 import pymongo
 from utils import stats_collection
 
+import prometheus_client
+
 from models.Stats import RunTimeStat, UserCreationStat, UserDeletionStat, SpotifyRequestCalledStat
+
+
+SPOTICRON_RUN_TIME = prometheus_client.Histogram('spoticron_run_time', 'Total time taken for spoticron to run')
+SPOTICRON_TRACK_ADDED = prometheus_client.Counter('spoticron_tracks_added', 'Total tracks added to playlists')
+AUTONOMA_USER_CREATED = prometheus_client.Counter('autonoma_user_created', 'Total times an account has been created')
+AUTONOMA_USER_DELETED = prometheus_client.Counter('autonoma_user_deleted', 'Total times an account has been deleted')
+AUTONOMA_SPOTIFY_REQUESTS = prometheus_client.Counter("autonoma_spotify_request", 'Track total spotify requests')
+SPOTICRON_DISABLED = prometheus_client.Counter("spoticron_disabled", "Number of times accounts have disabled spoticron")
+SPOTICRON_ENABLED = prometheus_client.Counter("spoticron_enabled", "Number of times accounts have enabled spoticron")
 
 class StatsRepository:
     @staticmethod
     def spoticron_run_time(run_time: RunTimeStat) -> RunTimeStat:
-        result = stats_collection.insert_one(run_time.dict())
-        assert result.acknowledged
+        SPOTICRON_RUN_TIME.observe(run_time.time)
         return run_time
 
     @staticmethod
     def user_creation() -> UserCreationStat:
-        user_creation = UserCreationStat()
-        result = stats_collection.insert_one(user_creation.dict())
-        assert result.acknowledged
-        return user_creation
+        AUTONOMA_USER_CREATED.inc()
+        return UserCreationStat()
 
     @staticmethod
     def user_deletion() -> UserDeletionStat:
-        user_deletion = UserDeletionStat()
-        result = stats_collection.insert_one(user_deletion.dict())
-        assert result.acknowledged
-        return user_deletion
+        AUTONOMA_USER_DELETED.inc()
+        return UserDeletionStat()
 
+    @staticmethod
     def spotify_request_called() -> None:
-        query = SpotifyRequestCalledStat().dict()
-        createdAt = query.pop('createdAt')
-        updatedAt = query.pop('updatedAt')
-        query.pop('counter')
-        result = stats_collection.find_one_and_update(query, {"$inc": {"counter": 1}, "$set": {
-                                             "updatedAt": updatedAt}, "$min": {"createdAt": createdAt}}, upsert=True, return_document=pymongo.collection.ReturnDocument.AFTER)
-        return SpotifyRequestCalledStat(**result)
+        AUTONOMA_SPOTIFY_REQUESTS.inc()
+
+    @staticmethod
+    def spoticron_enabled() -> None:
+        SPOTICRON_ENABLED.inc()
+    
+    @staticmethod
+    def spoticron_disabled() -> None:
+        SPOTICRON_DISABLED.inc()
+
+    def spoticron_tracks_added(n:int = 1) -> None:            
+        SPOTICRON_TRACK_ADDED.inc(n)
