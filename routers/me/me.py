@@ -18,7 +18,8 @@ router = APIRouter(
 )
 
 @router.delete('/')
-def delete_user(str = Depends(AuthFlowRepository.auth_required_dep)) -> str:
+def delete_user(id = Depends(AuthFlowRepository.auth_required_dep)) -> str:
+    logger.info(f'Deleting user with {id=}')
     UserRepository.delete(PydanticObjectId.validate(id))
     logger.info(f'User with {id=} was deleted')
     StatsRepository.user_deletion()
