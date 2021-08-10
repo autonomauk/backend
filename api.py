@@ -8,6 +8,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from starlette.responses import RedirectResponse
+from starlette_exporter import PrometheusMiddleware, handle_metrics
 
 import config
 
@@ -20,7 +21,7 @@ app = FastAPI(
 
 app.add_middleware(CORSMiddleware, allow_origins=[
                    "*"], allow_credentials=True, allow_methods=["*"], allow_headers=["*"]) # TODO Change this
-
+app.add_middleware(PrometheusMiddleware, prefix='autonoma_api', app_name='autonoma_api')
 
 @app.exception_handler(BaseAPIException)
 def http_exception_handler(request, exc) -> BaseAPIException:
@@ -42,7 +43,7 @@ app.include_router(me.router)
 # METRICS #
 ############
 
-app.include_router(metrics.router)
+app.add_route("/metrics", handle_metrics)
 
 ########
 # Home #

@@ -1,9 +1,14 @@
 from datetime import timedelta
-import pytest
-import random
 
-from repositories.stats import StatsRepository
-from models.Stats import RunTimeStat, SpotifyRequestCalledStat, UserCreationStat, UserDeletionStat
+from prometheus_client import metrics
+from models.Stats import RunTimeStat
+import pytest
+import requests
+
+from repositories.stats import SPOTICRON_RUN_TIME, StatsRepository
+
+import prometheus_client
+
 from utils import stats_collection
 
 # pylint was complaingin about func(run_time) being overwritten in functions as an arg.
@@ -12,83 +17,69 @@ from utils import stats_collection
 # pylint:disable=redefined-outer-name
 
 @pytest.fixture
-def run_time():
-    run_time: RunTimeStat = RunTimeStat(time=round(random.random()*10, 6))
-
-    yield run_time
-
-    stats_collection.delete_one({'time': run_time.time, 'stat': str(
-        run_time.stat), 'createdAt': run_time.createdAt})
-
+def registry() -> prometheus_client.CollectorRegistry:
+    yield prometheus_client.REGISTRY
 
 class TestStatsRepository:
-    def test_spoticron_run_time(self, run_time: RunTimeStat):
-        assert run_time is not None
+    def test_spoticron_run_time(self, registry: prometheus_client.CollectorRegistry):
+        assert registry.get_sample_value("spoticron_run_time_sum") == 0.0
+        c = 0
+        for i in range(10):
+            StatsRepository.spoticron_run_time(RunTimeStat(time=i))
+            assert registry.get_sample_value("spoticron_run_time_sum") == (c:=c+i)
 
-        StatsRepository.spoticron_run_time(run_time=run_time)
+    def test_user_creation(self, registry: prometheus_client.CollectorRegistry):
+        assert registry.get_sample_value("autonoma_user_created_total") == 0.0
+        c = 0
+        for i in range(10):
+            StatsRepository.user_creation()
+            assert registry.get_sample_value("autonoma_user_created_total") == (c:=c+1)
 
-        got_run_time = RunTimeStat(
-            **stats_collection.find_one({"time": run_time.time}))
+    def test_user_deletion(self, registry: prometheus_client.CollectorRegistry):
+        assert registry.get_sample_value("autonoma_user_deleted_total") == 0.0
+        c = 0
+        for i in range(10):
+            StatsRepository.user_deletion()
+            assert registry.get_sample_value("autonoma_user_deleted_total") == (c:=c+1)
 
-        assert got_run_time.time == run_time.time
-        assert got_run_time.stat == run_time.stat
+    def test_spotify_request_called(self, registry: prometheus_client.CollectorRegistry):
+        assert registry.get_sample_value("autonoma_spotify_request_total") == 0.0
+        c = 0
+        for i in range(10):
+            StatsRepository.spotify_request_called()
+            assert registry.get_sample_value("autonoma_spotify_request_total") == (c:=c+1)
 
-    def test_user_creation(self):
-        user_creation: UserCreationStat = StatsRepository.user_creation()
 
-        got_user_creation = UserCreationStat(**stats_collection.find_one({
-            "stat": user_creation.stat,
-            "createdAt": {
-                "$gt": user_creation.createdAt.replace(microsecond=0),
-                "$lte": user_creation.createdAt+timedelta(seconds=1)
-            }
-        }))
+    def test_tracks_aded_called(self, registry: prometheus_client.CollectorRegistry):
+        assert registry.get_sample_value("spoticron_tracks_added_total") == 0.0
+        c = 0
+        for i in range(10):
+            StatsRepository.spoticron_tracks_added(i)
+            assert registry.get_sample_value("spoticron_tracks_added_total") == (c:=c+i)
+    
+    def test_spoticron_enabled(self, registry: prometheus_client.CollectorRegistry):
+        assert registry.get_sample_value("spoticron_enabled_total") == 0.0
+        c = 0
+        for i in range(10):
+            StatsRepository.spoticron_enabled()
+            assert registry.get_sample_value("spoticron_enabled_total") == (c:=c+1)
+    
+    def test_spoticron_disabled(self, registry: prometheus_client.CollectorRegistry):
+        assert registry.get_sample_value("spoticron_disabled_total") == 0.0
+        c = 0
+        for i in range(10):
+            StatsRepository.spoticron_disabled()
+            assert registry.get_sample_value("spoticron_disabled_total") == (c:=c+1)
 
-        assert got_user_creation.stat == user_creation.stat
-        assert got_user_creation.createdAt.replace(
-            microsecond=0) == user_creation.createdAt.replace(microsecond=0)
+    def test_generated(self):
+        generated = str(prometheus_client.generate_latest()) # This is the function that collates the /metrics response
+        metrics = ["spoticron_disabled_total",
+                   "autonoma_user_created_total",
+                   "autonoma_user_deleted_total",
+                   "autonoma_spotify_request_total",
+                   "spoticron_tracks_added_total",
+                   "spoticron_enabled_total",
+                   "spoticron_disabled_total"]
+        assert all([m in generated for m in metrics])
 
-        # tear down
-        assert stats_collection.delete_one(
-            {"stat": user_creation.stat, "createdAt": user_creation.createdAt}) is not None
-
-    def test_user_deletion(self):
-        user_deletion: UserDeletionStat = StatsRepository.user_deletion()
-
-        got_user_deletion = UserDeletionStat(**stats_collection.find_one({
-            "stat": user_deletion.stat,
-            "createdAt": {
-                "$gt": user_deletion.createdAt.replace(microsecond=0),
-                "$lte": user_deletion.createdAt+timedelta(seconds=1)
-            }
-        }))
-
-        assert got_user_deletion.stat == user_deletion.stat
-        assert got_user_deletion.createdAt.replace(
-            microsecond=0) == user_deletion.createdAt.replace(microsecond=0)
-
-        # tear down
-        assert stats_collection.delete_one(
-            {"stat": got_user_deletion.stat, "createdAt": got_user_deletion.createdAt}) is not None
-
-    def test_spotify_request_called(self):
-        spotify_request_called: SpotifyRequestCalledStat = StatsRepository.spotify_request_called()
-
-        got_spotify_request_called = SpotifyRequestCalledStat(**stats_collection.find_one({
-            "stat": spotify_request_called.stat,
-            "createdAt": {
-                "$gt": spotify_request_called.createdAt.replace(microsecond=0),
-                "$lte": spotify_request_called.createdAt+timedelta(seconds=1)
-            }
-        }))
-
-        assert got_spotify_request_called.stat == spotify_request_called.stat
-        assert got_spotify_request_called.createdAt.replace(
-            microsecond=0) == spotify_request_called.createdAt.replace(microsecond=0)
-
-        # tear down
-        assert stats_collection.delete_one(
-            {
-                "stat": got_spotify_request_called.stat, 
-                "createdAt": got_spotify_request_called.createdAt
-            }) is not None
+        assert 'thisonedoesntexist' not in generated

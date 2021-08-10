@@ -1,3 +1,4 @@
+from repositories.stats import StatsRepository
 from models.ObjectId import PydanticObjectId
 from pydantic.errors import PydanticErrorMixin
 from models.User import User
@@ -30,5 +31,9 @@ def update_naming_scheme_setting(new_naming_scheme: PlaylistNamingSchemeEnum = H
 def update_enabled_setting(enabled: bool = Header(None), id: PydanticObjectId = Depends(AuthFlowRepository.auth_required_dep)) -> bool:
     user: User = UserRepository.get(id)
     user.settings.enabled = enabled
+    if enabled:
+        StatsRepository.spoticron_enabled()
+    else:
+        StatsRepository.spoticron_disabled()
     UserRepository.update(user.id, user)
     return user.settings.enabled
