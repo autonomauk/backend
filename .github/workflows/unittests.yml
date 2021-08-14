@@ -1,0 +1,33 @@
+name: Unit tests
+on:
+  push:
+    branches: [master, dev]
+  pull_request:
+    branches: [master, dev]
+  workflow_dispatch:
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+
+      - name: Project dependencies
+        run: pip install -r requirements.txt && pip install pytest coverage
+
+      - name: Decrypt config
+        run: openssl enc -d -aes-256-cbc -pbkdf2 -in config/config.py.enc -out config/config.py -k ${{ secrets.CONFIG_KEY }}
+
+      - name: Run tests
+        run: coverage run --rcfile .coveragerc --branch --source=./ -m pytest && coverage xml
+
+      - uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: coverage.xml
+          fail_ci_if_error: true
