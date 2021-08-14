@@ -1,25 +1,25 @@
-from os import stat
-import pymongo
-from utils import stats_collection
-
 import prometheus_client
 
-from models.Stats import RunTimeStat, UserCreationStat, UserDeletionStat, SpotifyRequestCalledStat
+from models.Stats import RunTimeStat, UserCreationStat, UserDeletionStat
 
-
-SPOTICRON_RUN_TIME = prometheus_client.Histogram('spoticron_run_time', 'Total time taken for spoticron to run')
+SPOTICRON_RUN_TIME = prometheus_client.Histogram('spoticron_run_time', 'Total time taken for spoticron to run', buckets=(0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0,2.0,5.0,10.0,float('inf')))
+SPOTICRON_RUNS = prometheus_client.Counter('spoticron_runs', 'Total spoticron runs')
 SPOTICRON_TRACK_ADDED = prometheus_client.Counter('spoticron_tracks_added', 'Total tracks added to playlists')
-AUTONOMA_USER_CREATED = prometheus_client.Counter('autonoma_user_created', 'Total times an account has been created')
-AUTONOMA_USER_DELETED = prometheus_client.Counter('autonoma_user_deleted', 'Total times an account has been deleted')
-AUTONOMA_SPOTIFY_REQUESTS = prometheus_client.Counter("autonoma_spotify_request", 'Track total spotify requests')
+AUTONOMA_USER_CREATED = prometheus_client.Counter('autonoma_api_user_created', 'Total times an account has been created')
+AUTONOMA_USER_DELETED = prometheus_client.Counter('autonoma_api_user_deleted', 'Total times an account has been deleted')
+SPOTICRON_SPOTIFY_REQUESTS = prometheus_client.Counter("spoticron_spotify_request", 'Track total spotify requests')
 SPOTICRON_DISABLED = prometheus_client.Counter("spoticron_disabled", "Number of times accounts have disabled spoticron")
 SPOTICRON_ENABLED = prometheus_client.Counter("spoticron_enabled", "Number of times accounts have enabled spoticron")
 
 class StatsRepository:
     @staticmethod
-    def spoticron_run_time(run_time: RunTimeStat) -> RunTimeStat:
+    def spoticron_run_time(run_time: RunTimeStat) -> RunTimeStat:   
         SPOTICRON_RUN_TIME.observe(run_time.time)
         return run_time
+
+    @staticmethod
+    def spoticron_run() -> None:
+        SPOTICRON_RUNS.inc()
 
     @staticmethod
     def user_creation() -> UserCreationStat:
@@ -33,7 +33,7 @@ class StatsRepository:
 
     @staticmethod
     def spotify_request_called() -> None:
-        AUTONOMA_SPOTIFY_REQUESTS.inc()
+        SPOTICRON_SPOTIFY_REQUESTS.inc()
 
     @staticmethod
     def spoticron_enabled() -> None:
