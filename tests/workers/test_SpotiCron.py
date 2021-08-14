@@ -1,4 +1,5 @@
 import datetime
+import time
 from tests.variables import TRACK_DICT_1
 from models.ObjectId import PydanticObjectId
 
@@ -129,3 +130,15 @@ class TestSpotiCronRunnerPerUser:
                 logger.debug(f"Unfollowing {playlist.name=}")
                 spoticron_runner.spotify.current_user_unfollow_playlist(
                     playlist.id)
+
+    def test_time(self, spoticron_runner: SpotiCronRunnerPerUser):
+        total_dt = 0
+        n = 10
+        for _ in range(n):
+            t1 = time.time()
+            spoticron_runner.run()
+            t2 = time.time()
+            dt = t2-t1
+            total_dt += dt
+
+        assert (dt/n) < 1.0 # Average run-time <1.0s
