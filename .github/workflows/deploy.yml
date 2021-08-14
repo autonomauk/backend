@@ -32,6 +32,9 @@ jobs:
     - name: Install packages
       run: |
         ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{secrets.API_DIR}}; python3.9 -m pip install -r requirements.txt"
+        
+    - name: Decrypt config.py
+      run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{secrets.API_DIR}}; openssl enc -d -aes-256-cbc -pbkdf2 -in config/config.py.enc -out config/config.py -k ${{ secrets.CONFIG_KEY }}"
     
     - name: MongoDB migrations
       run: |
