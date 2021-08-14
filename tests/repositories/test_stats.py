@@ -5,7 +5,7 @@ from models.Stats import RunTimeStat
 import pytest
 import requests
 
-from repositories.stats import SPOTICRON_RUN_TIME, StatsRepository
+from repositories.stats import StatsRepository
 
 import prometheus_client
 
@@ -29,25 +29,25 @@ class TestStatsRepository:
             assert registry.get_sample_value("spoticron_run_time_sum") == (c:=c+i)
 
     def test_user_creation(self, registry: prometheus_client.CollectorRegistry):
-        assert registry.get_sample_value("autonoma_user_created_total") == 0.0
+        assert registry.get_sample_value("autonoma_api_user_created_total") == 0.0
         c = 0
         for i in range(10):
             StatsRepository.user_creation()
-            assert registry.get_sample_value("autonoma_user_created_total") == (c:=c+1)
+            assert registry.get_sample_value("autonoma_api_user_created_total") == (c:=c+1)
 
     def test_user_deletion(self, registry: prometheus_client.CollectorRegistry):
-        assert registry.get_sample_value("autonoma_user_deleted_total") == 0.0
+        assert registry.get_sample_value("autonoma_api_user_deleted_total") == 0.0
         c = 0
         for i in range(10):
             StatsRepository.user_deletion()
-            assert registry.get_sample_value("autonoma_user_deleted_total") == (c:=c+1)
+            assert registry.get_sample_value("autonoma_api_user_deleted_total") == (c:=c+1)
 
     def test_spotify_request_called(self, registry: prometheus_client.CollectorRegistry):
-        assert registry.get_sample_value("autonoma_spotify_request_total") == 0.0
+        assert registry.get_sample_value("spoticron_spotify_request_total") == 0.0
         c = 0
         for i in range(10):
             StatsRepository.spotify_request_called()
-            assert registry.get_sample_value("autonoma_spotify_request_total") == (c:=c+1)
+            assert registry.get_sample_value("spoticron_spotify_request_total") == (c:=c+1)
 
 
     def test_tracks_aded_called(self, registry: prometheus_client.CollectorRegistry):
@@ -70,16 +70,25 @@ class TestStatsRepository:
         for i in range(10):
             StatsRepository.spoticron_disabled()
             assert registry.get_sample_value("spoticron_disabled_total") == (c:=c+1)
+    
+    def test_spoticron_runs(self, registry: prometheus_client.CollectorRegistry):
+        assert registry.get_sample_value("spoticron_runs_total") == 0.0
+        c = 0
+        for i in range(10):
+            StatsRepository.spoticron_run()
+            assert registry.get_sample_value("spoticron_runs_total") == (c:=c+1)
 
     def test_generated(self):
         generated = str(prometheus_client.generate_latest()) # This is the function that collates the /metrics response
         metrics = ["spoticron_disabled_total",
-                   "autonoma_user_created_total",
-                   "autonoma_user_deleted_total",
-                   "autonoma_spotify_request_total",
+                   "autonoma_api_user_created_total",
+                   "autonoma_api_user_deleted_total",
+                   "spoticron_spotify_request_total",
                    "spoticron_tracks_added_total",
                    "spoticron_enabled_total",
-                   "spoticron_disabled_total"]
+                   "spoticron_disabled_total",
+                   "spoticron_runs_total",
+                   "spoticron_run_time_sum"]
         assert all([m in generated for m in metrics])
 
         assert 'thisonedoesntexist' not in generated
