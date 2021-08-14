@@ -138,3 +138,5 @@ dmypy.json
 cython_debug/
 
 config/config.py
+
+profiling_stats.txt
