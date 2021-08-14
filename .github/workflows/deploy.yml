@@ -1,0 +1,44 @@
+# This workflow will install Python dependencies, run tests and lint with a single version of Python
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+
+name: Deploy backend
+on:
+  create:
+    tags:
+      - v*
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Set up SSH agent
+      uses: webfactory/ssh-agent@v0.5.3
+      with:
+          ssh-private-key: ${{ secrets.SSH_KEY }}
+          
+    - name: Add GitHub to the SSH known hosts file
+      run: ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
+      
+    - name: Stop backend
+      run: |
+        ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "sudo systemctl stop Autonoma@worker.service Autonoma@server.service"
+        
+    - name: Sync to server
+      run: rsync -avr --rsh "ssh" --delete-after --delete-excluded ./ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.API_DIR }}
+    
+    - name: Install packages
+      run: |
+        ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{secrets.API_DIR}}; python3.9 -m pip install -r requirements.txt"
+    
+    - name: MongoDB migrations
+      run: |
+        ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{secrets.API_DIR}}; python3.9 . --migrate --env=production"    
+
+    - name: Start backend back up
+      run: |
+        ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "sudo systemctl start Autonoma@worker.service Autonoma@server.service"
+    
+  
