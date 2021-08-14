@@ -4,15 +4,12 @@ on:
     branches: [master, dev]
   pull_request:
     branches: [master, dev]
-  schedule:
-    - cron: '0 9 * * *'  # every day at midnight
+  workflow_dispatch:
 
 jobs:
   backend:
     runs-on: ubuntu-latest
-    env:
-      PYTHONPATH: ./backend
-
+    
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
@@ -21,14 +18,13 @@ jobs:
         uses: actions/setup-python@v2
 
       - name: Project dependencies
-        run: pip install -r backend/requirements.txt && pip install pytest coverage
+        run: pip install -r requirements.txt && pip install pytest coverage
 
       - name: Decrypt config
-        working-directory: ./backend
         run: openssl enc -d -aes-256-cbc -pbkdf2 -in config/config.py.enc -out config/config.py -k ${{ secrets.CONFIG_KEY }}
 
       - name: Run tests
-        run: coverage run --rcfile ./backend/.coveragerc --branch --source=backend/ -m pytest && coverage xml
+        run: coverage run --rcfile .coveragerc --branch --source=./ -m pytest && coverage xml
 
       - uses: codecov/codecov-action@v1
         with:
