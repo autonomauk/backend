@@ -9,7 +9,7 @@
       "type": "python",
       "request": "launch",
       "program": "__main__.py",
-      "args": ["--worker", "-vv"],
+      "args": ["--worker", "-v", "--one-shot"],
       "console": "integratedTerminal"
     },
     {
