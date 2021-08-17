@@ -4,6 +4,7 @@ from routers import login
 from routers import me
 
 from fastapi import FastAPI
+from fastapi.openapi.docs import get_redoc_html,  get_swagger_ui_html
 from fastapi.middleware.cors import CORSMiddleware
 
 from starlette.responses import RedirectResponse
@@ -13,9 +14,9 @@ import config
 
 app = FastAPI(
     title="AutonomaAPI",
-#    docs_url=None if config.ENV == "production" else '/docs',
-    redoc_url=None if config.ENV == "production" else '/redoc',
-    openapi_url=None if config.ENV == "production" else '/openapi.json'
+    openapi_url = None if config.ENV == "production" else "/openapi.json",
+    docs_url = None,
+    redoc_url = None
 )
 
 app.add_middleware(CORSMiddleware, allow_origins=[
@@ -25,6 +26,25 @@ app.add_middleware(PrometheusMiddleware, prefix='autonoma_api', app_name='autono
 @app.exception_handler(BaseAPIException)
 def http_exception_handler(request, exc) -> BaseAPIException:
     return exc.response()
+
+########
+# DOCS #
+########
+if config.ENV != "production":
+    @app.get("/docs", include_in_schema=False)
+    def get_swagger_ui_html():
+        return get_swagger_ui_html(
+            openapi_url=config.API_PATH+app.openapi_url,
+            title=app.title + " - Swagger UI"
+        )
+    @app.get("/redoc", include_in_schema=False)
+    def redoc_html():
+        return get_redoc_html(
+            openapi_url=config.API_PATH+app.openapi_url,
+            title=app.title + " - ReDoc"
+        )
+
+
 
 #####################
 # LOGIN/LOGOUT FLOW #
