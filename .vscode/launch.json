@@ -16,10 +16,10 @@
       "name": "Python: FastAPI",
       "type": "python",
       "request": "launch",
-      "module": "uvicorn",
-      "env": {"SP_ENV":"development"},
-      "args": ["api:app", "--reload","--port","3001"],
-      "jinja": true
+      "program": "__main__.py",
+      "args": ["--server", "--env=development"],
+      "jinja": true,
+      "console": "integratedTerminal"
     }
   ]
 }
