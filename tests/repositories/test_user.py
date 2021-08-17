@@ -148,8 +148,6 @@ class TestUserRepository:
             UserRepository.delete(user.id)
 
     def test_list(self, user: User):
-        users_collection.drop()
-
         user1: User = copy.deepcopy(user)
         user2: User = copy.deepcopy(user)
         user2.id = PydanticObjectId()
@@ -160,14 +158,13 @@ class TestUserRepository:
 
         users: Users = UserRepository.list()
         # Create 2 sets holding ALL user id's. Find difference and if that is 
-        # False (i.e. empty) then we have found all users
-        assert not set([u.id for u in users]) - set([user1.id, user2.id])
-        assert len(users) == 2
+        # set() then we have found all users that we added. Other tests may be running
+        # and therefore we assume that if we have our 2 users the test was successful.
+        assert set([user1.id, user2.id]) - set([u.id for u in users]) == set()
         assert all((isinstance(f, User) for f in users))
         
         users: Users = UserRepository.list({"settings.enabled": True})
-        assert users[0].id == user1.id
-        assert len(users) == 1
+        assert user1.id in (u.id for u in users)
         assert all((isinstance(f, User) for f in users))
 
     def test_add_tracks_to_log(self, user: User):
