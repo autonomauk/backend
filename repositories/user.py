@@ -1,5 +1,5 @@
 from models.music.TrackLog import TrackLog, TrackLogs
-from typing import List
+from typing import List, Tuple
 from bson.objectid import ObjectId
 
 from utils import users_collection, get_time
@@ -87,18 +87,44 @@ class UserRepository:
             raise UserNotFoundException(identifier=id)
 
     @staticmethod
-    def read_track_log(id: PydanticObjectId) -> TrackLogs:
-        # TODO Implement pagenation
+    def read_track_log(id: PydanticObjectId, offset: int, length: int) -> Tuple[TrackLogs, int]:
         if not isinstance(id, ObjectId):
             raise ValueError(f"id is type {type(id)} and not ObjectId")
 
-        cursor = users_collection.find_one(
-            {'_id': id},
-            {'_id': 0, 'track_log': 1})
+        aggregation: List[dict] =[
+            {
+                '$match': {
+                    '_id': id
+                }
+            }, {
+                '$project': {
+                    'track_log': 1, 
+                    '_id': 0
+                }
+            }, {
+                '$unwind': {
+                    'path': '$track_log', 
+                    'preserveNullAndEmptyArrays': True
+                }
+            }, {
+                '$sort': {
+                    'track_log.createdAt': -1
+                }
+            }]
+
+        if offset>0:
+            aggregation.append({'$skip': offset})
+
+        aggregation.append({'$limit': length})
+
+        cursor = users_collection.aggregate(aggregation)
 
         if not cursor:
             raise UserNotFoundException(identifier=id)
 
-        result: TrackLogs = [TrackLog(**f) for f in cursor['track_log']]
+        total_cursor = users_collection.aggregate([{"$match":{'_id': id}},{"$project":{"count": {"$size":"$track_log"}}}])
 
-        return result
+        total: int = [f.get('count') for f in total_cursor][0]
+        result: TrackLogs = [TrackLog(**f['track_log']) for f in cursor if f != {}] # Aggregation pipeline will return {} if there is nothing
+
+        return result, total

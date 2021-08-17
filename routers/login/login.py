@@ -1,5 +1,5 @@
 from repositories.auth_flow import AuthFlowRepository
-from fastapi import APIRouter
+from fastapi import APIRouter, Request
 from starlette.responses import RedirectResponse
 
 router = APIRouter(
@@ -9,7 +9,7 @@ router = APIRouter(
 
 @router.get("/",
          description="Begin login flow via Spotify")
-def user_login() -> RedirectResponse:
+def user_login(request: Request) -> RedirectResponse:
     return AuthFlowRepository.login()
 
 

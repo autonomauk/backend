@@ -31,8 +31,8 @@ if __name__ == "__main__":
         logger.warning("Threading is not supported for server yet. Try re-running with --worker")
 
     if args.server:
-        from config import PORT, UVICORN_ROOT_PATH, HOST_IP
-        uvicorn.run("api:app", host=HOST_IP, port=PORT, root_path=UVICORN_ROOT_PATH, reload=args.env=="development")
+        from config import PORT, HOST_IP
+        uvicorn.run("api:app", host=HOST_IP, port=PORT, reload=args.env=="development")
     elif args.worker:
         from workers.SpotiCron import SpotiCron
         SpotiCron(profile=args.profile, oneshot=args.oneshot, threaded=args.threaded, dev=args.env=="development")

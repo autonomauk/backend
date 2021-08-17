@@ -67,11 +67,10 @@ class TestSpotiCronRunnerPerUser:
         assert isinstance(spoticron_runner.target_playlist, Playlist)
         assert isinstance(spoticron_runner.user, User)
 
-        assert spoticron_runner.user.spotifyAuthDetails.expires_at.replace(
-            tzinfo=None) >= get_time()
-        assert spoticron_runner.user.spotifyAuthDetails.access_token is not USER_DICT()[
+        assert spoticron_runner.user.spotifyAuthDetails.expires_at.replace(tzinfo=None) >= get_time()
+        assert spoticron_runner.user.spotifyAuthDetails.access_token != USER_DICT()[
             'spotifyAuthDetails']['access_token']
-        assert spoticron_runner.user.spotifyAuthDetails.refresh_token is USER_DICT()[
+        assert spoticron_runner.user.spotifyAuthDetails.refresh_token == USER_DICT()[
             'spotifyAuthDetails']['refresh_token']
 
         updated_user: User = UserRepository.get(spoticron_runner.user.id)
