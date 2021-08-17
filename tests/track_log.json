@@ -1,0 +1,1040 @@
+[
+  {
+    "createdAt": {
+      "$date": "2021-07-18T22:25:47.553Z"
+    },
+    "updatedAt": {
+      "$date": "2021-07-18T22:25:47.553Z"
+    },
+    "track": {
+      "name": "Friday I'm In Love",
+      "artists": [
+        {
+          "uri": "spotify:artist:7bu3H8JO7d0UbMoVzbo70s",
+          "name": "The Cure"
+        }
+      ],
+      "album": {
+        "image_url": "https://i.scdn.co/image/ab67616d0000b2739c72b249fcaa04d074c1dfcd",
+        "uri": "spotify:album:0aEL0zQ4XLuxQP0j7sLlS1",
+        "name": "Wish"
+      },
+      "uri": "spotify:track:4QlzkaRHtU8gAdwqjWmO8n"
+    },
+    "playlist": {
+      "name": "July 21",
+      "uri": "spotify:playlist:1MFX1vRsDDz9mpaScaFiG1"
+    }
+  },
+  {
+    "createdAt": {
+      "$date": "2021-07-22T15:54:01.372Z"
+    },
+    "updatedAt": {
+      "$date": "2021-07-22T15:54:01.372Z"
+    },
+    "track": {
+      "name": "Paralyzed",
+      "artists": [
+        {
+          "uri": "spotify:artist:6G43CiunIxMwb2tQ12vNP6",
+          "name": "LANDMVRKS"
+        }
+      ],
+      "album": {
+        "image_url": "https://i.scdn.co/image/ab67616d0000b273044327565119bf13591a654d",
+        "uri": "spotify:album:2nnAMneGs3RN6pkl9SxwDt",
+        "name": "Lost in the Waves"
+      },
+      "uri": "spotify:track:5xcILSohBQKIpgWLkC8aFi"
+    },
+    "playlist": {
+      "name": "July 21",
+      "uri": "spotify:playlist:1MFX1vRsDDz9mpaScaFiG1"
+    }
+  },
+  {
+    "createdAt": {
+      "$date": "2021-07-24T16:03:54.341Z"
+    },
+    "updatedAt": {
+      "$date": "2021-07-24T16:03:54.341Z"
+    },
+    "track": {
+      "name": "Take My Hand",
+      "artists": [
+        {
+          "uri": "spotify:artist:7jLSEPYCYQ5ssWU3BICqrW",
+          "name": "Picture This"
+        }
+      ],
+      "album": {
+        "image_url": "https://i.scdn.co/image/ab67616d0000b273a5f21a335b5e8ad8c45b2aa6",
+        "uri": "spotify:album:5RvSeWeeZHU1blLJqcOgnu",
+        "name": "Picture This"
+      },
+      "uri": "spotify:track:5mi7RZUIG5kxPAL0PFFtTE"
+    },
+    "playlist": {
+      "name": "July 21",
+      "uri": "spotify:playlist:1MFX1vRsDDz9mpaScaFiG1"
+    }
+  },
+  {
+    "createdAt": {
+      "$date": "2021-07-24T16:53:10.751Z"
+    },
+    "updatedAt": {
+      "$date": "2021-07-24T16:53:10.751Z"
+    },
+    "track": {
+      "name": "Talk - Single Edit",
+      "artists": [
+        {
+          "uri": "spotify:artist:536BYVgOnRky0xjsPT96zl",
+          "name": "Two Door Cinema Club"
+        }
+      ],
+      "album": {
+        "image_url": "https://i.scdn.co/image/ab67616d0000b273dab14c779696c58b0bb9ebcc",
+        "uri": "spotify:album:4XgX7TI2RY3vzjKhKJrkGq",
+        "name": "False Alarm"
+      },
+      "uri": "spotify:track:3DLscpihPP0Hallc6i93em"
+    },
+    "playlist": {
+      "name": "July 21",
+      "uri": "spotify:playlist:1MFX1vRsDDz9mpaScaFiG1"
+    }
+  },
+  {
+    "createdAt": {
+      "$date": "2021-07-24T18:10:07.356Z"
+    },
+    "updatedAt": {
+      "$date": "2021-07-24T18:10:07.356Z"
+    },
+    "track": {
+      "name": "One Night",
+      "artists": [
+        {
+          "uri": "spotify:artist:7jLSEPYCYQ5ssWU3BICqrW",
+          "name": "Picture This"
+        }
+      ],
+      "album": {
+        "image_url": "https://i.scdn.co/image/ab67616d0000b273f61e87c9321e856ce2e8cd69",
+        "uri": "spotify:album:3QtgX1erTG9GOReGuCJUxK",
+        "name": "One Night"
+      },
+      "uri": "spotify:track:7F8voH6D8afEt9GUUcDPfV"
+    },
+    "playlist": {
+      "name": "July 21",
+      "uri": "spotify:playlist:1MFX1vRsDDz9mpaScaFiG1"
+    }
+  },
+  {
+    "createdAt": {
+      "$date": "2021-07-24T21:30:04.870Z"
+    },
+    "updatedAt": {
+      "$date": "2021-07-24T21:30:04.870Z"
+    },
+    "track": {
+      "name": "No Tomorrow",
+      "artists": [
+        {
+          "uri": "spotify:artist:5zgc8pooHxd4un0F49YaCJ",
+          "name": "Orson"
+        }
+      ],
+      "album": {
+        "image_url": "https://i.scdn.co/image/ab67616d0000b273d39c8421239676ceb98ee2e3",
+        "uri": "spotify:album:3CbD5meaudNYNl42Ldw7Tp",
+        "name": "Bright Idea"
+      },
+      "uri": "spotify:track:0nJEcAgCKrFliZ5q0JxEtc"
+    },
+    "playlist": {
+      "name": "July 21",
+      "uri": "spotify:playlist:1MFX1vRsDDz9mpaScaFiG1"
+    }
+  },
+  {
+    "createdAt": {
+      "$date": "2021-07-25T18:15:25.983Z"
+    },
+    "updatedAt": {
+      "$date": "2021-07-25T18:15:25.983Z"
+    },
+    "track": {
+      "name": "Demons",
+      "artists": [
+        {
+          "uri": "spotify:artist:4xPR9p75zzDlisJvvhEYl2",
+          "name": "Jacob Lee"
+        }
+      ],
+      "album": {
+        "image_url": "https://i.scdn.co/image/ab67616d0000b2739fd618bb5f62ad3f0dc1c5aa",
+        "uri": "spotify:album:21VUqDeD2PMQ9uucCuk7bb",
+        "name": "Philosophy"
+      },
+      "uri": "spotify:track:2TwPS8vPh7ffcLhee3ocjA"
+    },
+    "playlist": {
+      "name": "July 21",
+      "uri": "spotify:playlist:1MFX1vRsDDz9mpaScaFiG1"
+    }
+  },
+  {
+    "createdAt": {
+      "$date": "2021-07-26T12:54:51.204Z"
+    },
+    "updatedAt": {
+      "$date": "2021-07-26T12:54:51.204Z"
+    },
+    "track": {
+      "name": "Scavengers",
+      "artists": [
+        {
+          "uri": "spotify:artist:3NChzMpu9exTlNPiqUQ2DE",
+          "name": "Thrice"
+        }
+      ],
+      "album": {
+        "image_url": "https://i.scdn.co/image/ab67616d0000b27348f268fa72a766cd416b3a93",
+        "uri": "spotify:album:5BG9LU8PNdDQxcEnruDyyC",
+        "name": "Scavengers"
+      },
+      "uri": "spotify:track:1POJGRV0cUI5WVYxRMmTuo"
+    },
+    "playlist": {
+      "name": "July 21",
+      "uri": "spotify:playlist:1MFX1vRsDDz9mpaScaFiG1"
+    }
+  },
+  {
+    "createdAt": {
+      "$date": "2021-07-28T22:47:54.747Z"
+    },
+    "updatedAt": {
+      "$date": "2021-07-28T22:47:54.747Z"
+    },
+    "track": {
+      "name": "There She Goes",
+      "artists": [
+        {
+          "uri": "spotify:artist:47Z8LEl3LnQkcpva0xSthT",
+          "name": "The La's"
+        }
+      ],
+      "album": {
+        "image_url": "https://i.scdn.co/image/ab67616d0000b2730e42d457a15ef2f133976f6b",
+        "uri": "spotify:album:1djwiQ802xeU8Q45jv1b0x",
+        "name": "The La's"
+      },
+      "uri": "spotify:track:4c6vZqYHFur11FbWATIJ9P"
+    },
+    "playlist": {
+      "name": "July 21",
+      "uri": "spotify:playlist:1MFX1vRsDDz9mpaScaFiG1"
+    }
+  },
+  {
+    "createdAt": {
+      "$date": "2021-07-29T10:07:57.535Z"
+    },
+    "updatedAt": {
+      "$date": "2021-07-29T10:07:57.535Z"
+    },
+    "track": {
+      "name": "On & On",
+      "artists": [
+        {
+          "uri": "spotify:artist:0u0UpxbGCOvx73fRjlVrkg",
+          "name": "PLTS"
+        }
+      ],
+      "album": {
+        "image_url": "https://i.scdn.co/image/ab67616d0000b273fa2749c3ad2f156eee34607b",
+        "uri": "spotify:album:2RNHylfS4dYmrP1DKUUIio",
+        "name": "On & On"
+      },
+      "uri": "spotify:track:31T7uoLzbyUgUs2RFtK3xR"
+    },
+    "playlist": {
+      "name": "July 21",
+      "uri": "spotify:playlist:1MFX1vRsDDz9mpaScaFiG1"
+    }
+  },
+  {
+    "createdAt": {
+      "$date": "2021-07-30T11:11:03.670Z"
+    },
+    "updatedAt": {
+      "$date": "2021-07-30T11:11:03.670Z"
+    },
+    "track": {
+      "name": "Pressure (feat. Tove Lo)",
+      "artists": [
+        {
+          "uri": "spotify:artist:60d24wfXkVzDSfLS6hyCjZ",
+          "name": "Martin Garrix"
+        },
+        {
+          "uri": "spotify:artist:4NHQUGzhtTLFvgF5SZesLK",
+          "name": "Tove Lo"
+        }
+      ],
+      "album": {
+        "image_url": "https://i.scdn.co/image/ab67616d0000b273b3adecd5865a661d12d07b6d",
+        "uri": "spotify:album:5s55A56E4N7390TTEUzwKN",
+        "name": "Pressure (feat. Tove Lo)"
+      },
+      "uri": "spotify:track:4ga4WvRNhMsIL38pkBbnIN"
+    },
+    "playlist": {
+      "name": "July 21",
+      "uri": "spotify:playlist:1MFX1vRsDDz9mpaScaFiG1"
+    }
+  },
+  {
+    "createdAt": {
+      "$date": "2021-08-01T00:00:26.128Z"
+    },
+    "updatedAt": {
+      "$date": "2021-08-01T00:00:26.128Z"
+    },
+    "track": {
+      "name": "Pressure (feat. Tove Lo)",
+      "artists": [
+        {
+          "uri": "spotify:artist:60d24wfXkVzDSfLS6hyCjZ",
+          "name": "Martin Garrix"
+        },
+        {
+          "uri": "spotify:artist:4NHQUGzhtTLFvgF5SZesLK",
+          "name": "Tove Lo"
+        }
+      ],
+      "album": {
+        "image_url": "https://i.scdn.co/image/ab67616d0000b273b3adecd5865a661d12d07b6d",
+        "uri": "spotify:album:5s55A56E4N7390TTEUzwKN",
+        "name": "Pressure (feat. Tove Lo)"
+      },
+      "uri": "spotify:track:4ga4WvRNhMsIL38pkBbnIN"
+    },
+    "playlist": {
+      "name": "August 21",
+      "uri": "spotify:playlist:55zPfHwZC79VFL7CcD8pef"
+    }
+  },
+  {
+    "createdAt": {
+      "$date": "2021-08-01T00:00:26.128Z"
+    },
+    "updatedAt": {
+      "$date": "2021-08-01T00:00:26.128Z"
+    },
+    "track": {
+      "name": "On & On",
+      "artists": [
+        {
+          "uri": "spotify:artist:0u0UpxbGCOvx73fRjlVrkg",
+          "name": "PLTS"
+        }
+      ],
+      "album": {
+        "image_url": "https://i.scdn.co/image/ab67616d0000b273fa2749c3ad2f156eee34607b",
+        "uri": "spotify:album:2RNHylfS4dYmrP1DKUUIio",
+        "name": "On & On"
+      },
+      "uri": "spotify:track:31T7uoLzbyUgUs2RFtK3xR"
+    },
+    "playlist": {
+      "name": "August 21",
+      "uri": "spotify:playlist:55zPfHwZC79VFL7CcD8pef"
+    }
+  },
+  {
+    "createdAt": {
+      "$date": "2021-08-01T00:00:26.128Z"
+    },
+    "updatedAt": {
+      "$date": "2021-08-01T00:00:26.128Z"
+    },
+    "track": {
+      "name": "There She Goes",
+      "artists": [
+        {
+          "uri": "spotify:artist:47Z8LEl3LnQkcpva0xSthT",
+          "name": "The La's"
+        }
+      ],
+      "album": {
+        "image_url": "https://i.scdn.co/image/ab67616d0000b2730e42d457a15ef2f133976f6b",
+        "uri": "spotify:album:1djwiQ802xeU8Q45jv1b0x",
+        "name": "The La's"
+      },
+      "uri": "spotify:track:4c6vZqYHFur11FbWATIJ9P"
+    },
+    "playlist": {
+      "name": "August 21",
+      "uri": "spotify:playlist:55zPfHwZC79VFL7CcD8pef"
+    }
+  },
+  {
+    "createdAt": {
+      "$date": "2021-08-01T00:00:26.129Z"
+    },
+    "updatedAt": {
+      "$date": "2021-08-01T00:00:26.129Z"
+    },
+    "track": {
+      "name": "Scavengers",
+      "artists": [
+        {
+          "uri": "spotify:artist:3NChzMpu9exTlNPiqUQ2DE",
+          "name": "Thrice"
+        }
+      ],
+      "album": {
+        "image_url": "https://i.scdn.co/image/ab67616d0000b27348f268fa72a766cd416b3a93",
+        "uri": "spotify:album:5BG9LU8PNdDQxcEnruDyyC",
+        "name": "Scavengers"
+      },
+      "uri": "spotify:track:1POJGRV0cUI5WVYxRMmTuo"
+    },
+    "playlist": {
+      "name": "August 21",
+      "uri": "spotify:playlist:55zPfHwZC79VFL7CcD8pef"
+    }
+  },
+  {
+    "createdAt": {
+      "$date": "2021-08-01T00:00:26.129Z"
+    },
+    "updatedAt": {
+      "$date": "2021-08-01T00:00:26.129Z"
+    },
+    "track": {
+      "name": "Demons",
+      "artists": [
+        {
+          "uri": "spotify:artist:4xPR9p75zzDlisJvvhEYl2",
+          "name": "Jacob Lee"
+        }
+      ],
+      "album": {
+        "image_url": "https://i.scdn.co/image/ab67616d0000b2739fd618bb5f62ad3f0dc1c5aa",
+        "uri": "spotify:album:21VUqDeD2PMQ9uucCuk7bb",
+        "name": "Philosophy"
+      },
+      "uri": "spotify:track:2TwPS8vPh7ffcLhee3ocjA"
+    },
+    "playlist": {
+      "name": "August 21",
+      "uri": "spotify:playlist:55zPfHwZC79VFL7CcD8pef"
+    }
+  },
+  {
+    "createdAt": {
+      "$date": "2021-08-01T00:00:26.129Z"
+    },
+    "updatedAt": {
+      "$date": "2021-08-01T00:00:26.129Z"
+    },
+    "track": {
+      "name": "No Tomorrow",
+      "artists": [
+        {
+          "uri": "spotify:artist:5zgc8pooHxd4un0F49YaCJ",
+          "name": "Orson"
+        }
+      ],
+      "album": {
+        "image_url": "https://i.scdn.co/image/ab67616d0000b273d39c8421239676ceb98ee2e3",
+        "uri": "spotify:album:3CbD5meaudNYNl42Ldw7Tp",
+        "name": "Bright Idea"
+      },
+      "uri": "spotify:track:0nJEcAgCKrFliZ5q0JxEtc"
+    },
+    "playlist": {
+      "name": "August 21",
+      "uri": "spotify:playlist:55zPfHwZC79VFL7CcD8pef"
+    }
+  },
+  {
+    "createdAt": {
+      "$date": "2021-08-01T00:00:26.129Z"
+    },
+    "updatedAt": {
+      "$date": "2021-08-01T00:00:26.129Z"
+    },
+    "track": {
+      "name": "One Night",
+      "artists": [
+        {
+          "uri": "spotify:artist:7jLSEPYCYQ5ssWU3BICqrW",
+          "name": "Picture This"
+        }
+      ],
+      "album": {
+        "image_url": "https://i.scdn.co/image/ab67616d0000b273f61e87c9321e856ce2e8cd69",
+        "uri": "spotify:album:3QtgX1erTG9GOReGuCJUxK",
+        "name": "One Night"
+      },
+      "uri": "spotify:track:7F8voH6D8afEt9GUUcDPfV"
+    },
+    "playlist": {
+      "name": "August 21",
+      "uri": "spotify:playlist:55zPfHwZC79VFL7CcD8pef"
+    }
+  },
+  {
+    "createdAt": {
+      "$date": "2021-08-01T00:00:26.129Z"
+    },
+    "updatedAt": {
+      "$date": "2021-08-01T00:00:26.129Z"
+    },
+    "track": {
+      "name": "Talk - Single Edit",
+      "artists": [
+        {
+          "uri": "spotify:artist:536BYVgOnRky0xjsPT96zl",
+          "name": "Two Door Cinema Club"
+        }
+      ],
+      "album": {
+        "image_url": "https://i.scdn.co/image/ab67616d0000b273dab14c779696c58b0bb9ebcc",
+        "uri": "spotify:album:4XgX7TI2RY3vzjKhKJrkGq",
+        "name": "False Alarm"
+      },
+      "uri": "spotify:track:3DLscpihPP0Hallc6i93em"
+    },
+    "playlist": {
+      "name": "August 21",
+      "uri": "spotify:playlist:55zPfHwZC79VFL7CcD8pef"
+    }
+  },
+  {
+    "createdAt": {
+      "$date": "2021-08-01T00:00:26.129Z"
+    },
+    "updatedAt": {
+      "$date": "2021-08-01T00:00:26.129Z"
+    },
+    "track": {
+      "name": "Take My Hand",
+      "artists": [
+        {
+          "uri": "spotify:artist:7jLSEPYCYQ5ssWU3BICqrW",
+          "name": "Picture This"
+        }
+      ],
+      "album": {
+        "image_url": "https://i.scdn.co/image/ab67616d0000b273a5f21a335b5e8ad8c45b2aa6",
+        "uri": "spotify:album:5RvSeWeeZHU1blLJqcOgnu",
+        "name": "Picture This"
+      },
+      "uri": "spotify:track:5mi7RZUIG5kxPAL0PFFtTE"
+    },
+    "playlist": {
+      "name": "August 21",
+      "uri": "spotify:playlist:55zPfHwZC79VFL7CcD8pef"
+    }
+  },
+  {
+    "createdAt": {
+      "$date": "2021-08-01T00:00:26.129Z"
+    },
+    "updatedAt": {
+      "$date": "2021-08-01T00:00:26.129Z"
+    },
+    "track": {
+      "name": "Paralyzed",
+      "artists": [
+        {
+          "uri": "spotify:artist:6G43CiunIxMwb2tQ12vNP6",
+          "name": "LANDMVRKS"
+        }
+      ],
+      "album": {
+        "image_url": "https://i.scdn.co/image/ab67616d0000b273044327565119bf13591a654d",
+        "uri": "spotify:album:2nnAMneGs3RN6pkl9SxwDt",
+        "name": "Lost in the Waves"
+      },
+      "uri": "spotify:track:5xcILSohBQKIpgWLkC8aFi"
+    },
+    "playlist": {
+      "name": "August 21",
+      "uri": "spotify:playlist:55zPfHwZC79VFL7CcD8pef"
+    }
+  },
+  {
+    "createdAt": {
+      "$date": "2021-08-01T00:00:26.129Z"
+    },
+    "updatedAt": {
+      "$date": "2021-08-01T00:00:26.129Z"
+    },
+    "track": {
+      "name": "Friday I'm In Love",
+      "artists": [
+        {
+          "uri": "spotify:artist:7bu3H8JO7d0UbMoVzbo70s",
+          "name": "The Cure"
+        }
+      ],
+      "album": {
+        "image_url": "https://i.scdn.co/image/ab67616d0000b2739c72b249fcaa04d074c1dfcd",
+        "uri": "spotify:album:0aEL0zQ4XLuxQP0j7sLlS1",
+        "name": "Wish"
+      },
+      "uri": "spotify:track:4QlzkaRHtU8gAdwqjWmO8n"
+    },
+    "playlist": {
+      "name": "August 21",
+      "uri": "spotify:playlist:55zPfHwZC79VFL7CcD8pef"
+    }
+  },
+  {
+    "createdAt": {
+      "$date": "2021-08-01T00:00:26.129Z"
+    },
+    "updatedAt": {
+      "$date": "2021-08-01T00:00:26.129Z"
+    },
+    "track": {
+      "name": "Wait for Me",
+      "artists": [
+        {
+          "uri": "spotify:artist:2qk9voo8llSGYcZ6xrBzKx",
+          "name": "Kings of Leon"
+        }
+      ],
+      "album": {
+        "image_url": "https://i.scdn.co/image/ab67616d0000b273d50b35057090d03bb0e759bc",
+        "uri": "spotify:album:0cRJKK0y1sfZEqWub4dK9v",
+        "name": "Mechanical Bull (Expanded Edition)"
+      },
+      "uri": "spotify:track:2nO1DYEg1X5GHi8SSuNJQj"
+    },
+    "playlist": {
+      "name": "August 21",
+      "uri": "spotify:playlist:55zPfHwZC79VFL7CcD8pef"
+    }
+  },
+  {
+    "createdAt": {
+      "$date": "2021-08-01T00:00:26.129Z"
+    },
+    "updatedAt": {
+      "$date": "2021-08-01T00:00:26.129Z"
+    },
+    "track": {
+      "name": "Smile & Wave",
+      "artists": [
+        {
+          "uri": "spotify:artist:4jl7rqDfdaWDHD0RdP7ndM",
+          "name": "Inja"
+        }
+      ],
+      "album": {
+        "image_url": "https://i.scdn.co/image/ab67616d0000b2735a3a4e3644ec5e296ef972dd",
+        "uri": "spotify:album:5pKqMPMT0KaftxsJnPnl9Q",
+        "name": "Smile & Wave"
+      },
+      "uri": "spotify:track:3QOnDM8LUo1ijcIuuHuagM"
+    },
+    "playlist": {
+      "name": "August 21",
+      "uri": "spotify:playlist:55zPfHwZC79VFL7CcD8pef"
+    }
+  },
+  {
+    "createdAt": {
+      "$date": "2021-08-01T00:00:26.129Z"
+    },
+    "updatedAt": {
+      "$date": "2021-08-01T00:00:26.129Z"
+    },
+    "track": {
+      "name": "Lighterless",
+      "artists": [
+        {
+          "uri": "spotify:artist:7ptm7G8z8VVvwBnDq8fAmD",
+          "name": "Microwave"
+        }
+      ],
+      "album": {
+        "image_url": "https://i.scdn.co/image/ab67616d0000b273356bb126b784d6d6dbcfde9d",
+        "uri": "spotify:album:2fWIkMJVzR4pNmHiqyDzPM",
+        "name": "Much Love"
+      },
+      "uri": "spotify:track:3oOWbDgCfzrA6F1pSsQOYg"
+    },
+    "playlist": {
+      "name": "August 21",
+      "uri": "spotify:playlist:55zPfHwZC79VFL7CcD8pef"
+    }
+  },
+  {
+    "createdAt": {
+      "$date": "2021-08-01T00:00:26.129Z"
+    },
+    "updatedAt": {
+      "$date": "2021-08-01T00:00:26.129Z"
+    },
+    "track": {
+      "name": "Lips",
+      "artists": [
+        {
+          "uri": "spotify:artist:4o0pNHbyj36LPvukNqEug0",
+          "name": "The Maine"
+        }
+      ],
+      "album": {
+        "image_url": "https://i.scdn.co/image/ab67616d0000b273ff6ecc18978c3df861ac44ea",
+        "uri": "spotify:album:1wIbvzJHWvtq7gqbkL7HU8",
+        "name": "Lips"
+      },
+      "uri": "spotify:track:0iUaKnG6yXoqXFPgWlUZWg"
+    },
+    "playlist": {
+      "name": "August 21",
+      "uri": "spotify:playlist:55zPfHwZC79VFL7CcD8pef"
+    }
+  },
+  {
+    "createdAt": {
+      "$date": "2021-08-01T00:00:26.129Z"
+    },
+    "updatedAt": {
+      "$date": "2021-08-01T00:00:26.129Z"
+    },
+    "track": {
+      "name": "Futureproof",
+      "artists": [
+        {
+          "uri": "spotify:artist:1kDGbuxWknIKx4FlgWxiSp",
+          "name": "Nothing But Thieves"
+        }
+      ],
+      "album": {
+        "image_url": "https://i.scdn.co/image/ab67616d0000b273d24c17758cdab101e9ce80ba",
+        "uri": "spotify:album:4OEXo5dPHC8m3h3um07mL0",
+        "name": "Miracle, Baby"
+      },
+      "uri": "spotify:track:5KALIH1roCDMoN2sAIjbE6"
+    },
+    "playlist": {
+      "name": "August 21",
+      "uri": "spotify:playlist:55zPfHwZC79VFL7CcD8pef"
+    }
+  },
+  {
+    "createdAt": {
+      "$date": "2021-08-01T00:00:26.129Z"
+    },
+    "updatedAt": {
+      "$date": "2021-08-01T00:00:26.129Z"
+    },
+    "track": {
+      "name": "Seventeen Going Under - Edit",
+      "artists": [
+        {
+          "uri": "spotify:artist:6zlR5ttMfMNmwf2lecU9Cc",
+          "name": "Sam Fender"
+        }
+      ],
+      "album": {
+        "image_url": "https://i.scdn.co/image/ab67616d0000b273504b74c88ce63e33826c553b",
+        "uri": "spotify:album:4RS1iWb2MC9o21z3t8zxl4",
+        "name": "Seventeen Going Under"
+      },
+      "uri": "spotify:track:4z86ZEcMLofosRyJMqBkIz"
+    },
+    "playlist": {
+      "name": "August 21",
+      "uri": "spotify:playlist:55zPfHwZC79VFL7CcD8pef"
+    }
+  },
+  {
+    "createdAt": {
+      "$date": "2021-08-01T00:00:26.129Z"
+    },
+    "updatedAt": {
+      "$date": "2021-08-01T00:00:26.129Z"
+    },
+    "track": {
+      "name": "Apply Some Pressure",
+      "artists": [
+        {
+          "uri": "spotify:artist:048FBwXjFYBWxSggPDipic",
+          "name": "Maximo Park"
+        }
+      ],
+      "album": {
+        "image_url": "https://i.scdn.co/image/ab67616d0000b273c82f323a484c24136d3e09dd",
+        "uri": "spotify:album:2I3qMX6R68Ce4Uo3VHAmPi",
+        "name": "Apply Some Pressure"
+      },
+      "uri": "spotify:track:1KbagD47zTS1PnmS8iKPIK"
+    },
+    "playlist": {
+      "name": "August 21",
+      "uri": "spotify:playlist:55zPfHwZC79VFL7CcD8pef"
+    }
+  },
+  {
+    "createdAt": {
+      "$date": "2021-08-01T00:00:26.129Z"
+    },
+    "updatedAt": {
+      "$date": "2021-08-01T00:00:26.129Z"
+    },
+    "track": {
+      "name": "Divine Intervention",
+      "artists": [
+        {
+          "uri": "spotify:artist:5wjKPzpc5xkAuPxaSXaUXJ",
+          "name": "Autopilot Off"
+        }
+      ],
+      "album": {
+        "image_url": "https://i.scdn.co/image/ab67616d0000b27319f2da0b5af5720a72bf2dac",
+        "uri": "spotify:album:3wdGGLQPzSBme7MuQnGolp",
+        "name": "Make A Sound"
+      },
+      "uri": "spotify:track:2WcVu1UixdWJvUKRhg3O2K"
+    },
+    "playlist": {
+      "name": "August 21",
+      "uri": "spotify:playlist:55zPfHwZC79VFL7CcD8pef"
+    }
+  },
+  {
+    "createdAt": {
+      "$date": "2021-08-05T22:54:56.497Z"
+    },
+    "updatedAt": {
+      "$date": "2021-08-05T22:54:56.497Z"
+    },
+    "track": {
+      "name": "White Noise",
+      "artists": [
+        {
+          "uri": "spotify:artist:6nS5roXSAGhTGr34W6n7Et",
+          "name": "Disclosure"
+        },
+        {
+          "uri": "spotify:artist:2VAnyOxzJuSAj7XIuEOT38",
+          "name": "AlunaGeorge"
+        }
+      ],
+      "album": {
+        "image_url": "https://i.scdn.co/image/ab67616d0000b27397b6abd463a0a5f6f77d6f6f",
+        "uri": "spotify:album:1c1OQBsCs2F4kRY8CXauuo",
+        "name": "White Noise"
+      },
+      "uri": "spotify:track:3nOMGGeQppHhfrkQ65VLVQ"
+    },
+    "playlist": {
+      "name": "August 21",
+      "uri": "spotify:playlist:55zPfHwZC79VFL7CcD8pef"
+    }
+  },
+  {
+    "createdAt": {
+      "$date": "2021-08-05T22:54:56.497Z"
+    },
+    "updatedAt": {
+      "$date": "2021-08-05T22:54:56.497Z"
+    },
+    "track": {
+      "name": "Losing It",
+      "artists": [
+        {
+          "uri": "spotify:artist:1VJ0briNOlXRtJUAzoUJdt",
+          "name": "FISHER"
+        }
+      ],
+      "album": {
+        "image_url": "https://i.scdn.co/image/ab67616d0000b2739367c1ee2eec0bf3a04b4868",
+        "uri": "spotify:album:143cxYCazoiNfviHRmxkdv",
+        "name": "Losing It"
+      },
+      "uri": "spotify:track:6ho0GyrWZN3mhi9zVRW7xi"
+    },
+    "playlist": {
+      "name": "August 21",
+      "uri": "spotify:playlist:55zPfHwZC79VFL7CcD8pef"
+    }
+  },
+  {
+    "createdAt": {
+      "$date": "2021-08-05T22:54:56.497Z"
+    },
+    "updatedAt": {
+      "$date": "2021-08-05T22:54:56.497Z"
+    },
+    "track": {
+      "name": "She's Quiet",
+      "artists": [
+        {
+          "uri": "spotify:artist:0hp58JplihFjlLstUbKS0x",
+          "name": "The Home Team"
+        }
+      ],
+      "album": {
+        "image_url": "https://i.scdn.co/image/ab67616d0000b2734e8e39a510127584991655c8",
+        "uri": "spotify:album:175y3TsY3wVRZUmI34PyhD",
+        "name": "Better Off"
+      },
+      "uri": "spotify:track:4xlMOALTScnY5tU9VdcmGY"
+    },
+    "playlist": {
+      "name": "August 21",
+      "uri": "spotify:playlist:55zPfHwZC79VFL7CcD8pef"
+    }
+  },
+  {
+    "createdAt": {
+      "$date": "2021-08-05T22:54:56.497Z"
+    },
+    "updatedAt": {
+      "$date": "2021-08-05T22:54:56.497Z"
+    },
+    "track": {
+      "name": "Shine A Little Light",
+      "artists": [
+        {
+          "uri": "spotify:artist:7mnBLXK823vNxN3UWB7Gfz",
+          "name": "The Black Keys"
+        }
+      ],
+      "album": {
+        "image_url": "https://i.scdn.co/image/ab67616d0000b27326ff57bc134aa594b08bf721",
+        "uri": "spotify:album:0aA9rYw8PEv9G7tVIJ9dKg",
+        "name": "\"Let's Rock\""
+      },
+      "uri": "spotify:track:365TSrFPqM66giaxJuafR3"
+    },
+    "playlist": {
+      "name": "August 21",
+      "uri": "spotify:playlist:55zPfHwZC79VFL7CcD8pef"
+    }
+  },
+  {
+    "createdAt": {
+      "$date": "2021-08-08T22:14:39.076Z"
+    },
+    "updatedAt": {
+      "$date": "2021-08-08T22:14:39.076Z"
+    },
+    "track": {
+      "name": "Yeah Yeah - D Ramirez Instrumental",
+      "artists": [
+        {
+          "uri": "spotify:artist:3FVJvsdVNbVmydSuI22Z5v",
+          "name": "Bodyrox"
+        }
+      ],
+      "album": {
+        "image_url": "https://i.scdn.co/image/ab67616d0000b273538e5039b801399a1e31970b",
+        "uri": "spotify:album:0qIj9p0MyiMJWtw9Bqc5br",
+        "name": "Yeah Yeah"
+      },
+      "uri": "spotify:track:0EkzCFbSQUHZNGOM4NfSr0"
+    },
+    "playlist": {
+      "name": "August 21",
+      "uri": "spotify:playlist:55zPfHwZC79VFL7CcD8pef"
+    }
+  },
+  {
+    "createdAt": {
+      "$date": "2021-08-09T13:51:14.706Z"
+    },
+    "updatedAt": {
+      "$date": "2021-08-09T13:51:14.706Z"
+    },
+    "track": {
+      "name": "California",
+      "artists": [
+        {
+          "uri": "spotify:artist:7bHTSvk96ULRLZPZr1SoCZ",
+          "name": "Mallory Knox"
+        }
+      ],
+      "album": {
+        "image_url": "https://i.scdn.co/image/ab67616d0000b273a5a1237d28ce4138ccb9fd1d",
+        "uri": "spotify:album:1RSAewFsJ7Q2vM5QaYMY1W",
+        "name": "Wired"
+      },
+      "uri": "spotify:track:0RLFEl9KTWE5vaESFryzA8"
+    },
+    "playlist": {
+      "name": "August 21",
+      "uri": "spotify:playlist:55zPfHwZC79VFL7CcD8pef"
+    }
+  },
+  {
+    "createdAt": {
+      "$date": "2021-08-10T12:53:34.322Z"
+    },
+    "updatedAt": {
+      "$date": "2021-08-10T12:53:34.322Z"
+    },
+    "track": {
+      "name": "insubordinate",
+      "artists": [
+        {
+          "uri": "spotify:artist:2o6toWFM0eynwdOjVJfoSQ",
+          "name": "alt."
+        }
+      ],
+      "album": {
+        "image_url": "https://i.scdn.co/image/ab67616d0000b273b9bcb8876abf372c197deb24",
+        "uri": "spotify:album:4aMl3TsyGhvNenYfr0kIcb",
+        "name": "dysfunctional"
+      },
+      "uri": "spotify:track:2EX5jKFhlAoKhLOHPPVVzq"
+    },
+    "playlist": {
+      "name": "August 21",
+      "uri": "spotify:playlist:55zPfHwZC79VFL7CcD8pef"
+    }
+  },
+  {
+    "createdAt": {
+      "$date": "2021-08-16T13:45:01.582Z"
+    },
+    "updatedAt": {
+      "$date": "2021-08-16T13:45:01.582Z"
+    },
+    "track": {
+      "name": "Fever",
+      "artists": [
+        {
+          "uri": "spotify:artist:0exhrQcReCdr11oPbOh22M",
+          "name": "Deaf Havana"
+        }
+      ],
+      "album": {
+        "image_url": "https://i.scdn.co/image/ab67616d0000b273a24fa469ef43814a579025aa",
+        "uri": "spotify:album:36scylzoJ2n1YYwuHD0Db0",
+        "name": "All These Countless Nights"
+      },
+      "uri": "spotify:track:0QPqmarimIKooURQb8ZR5Q"
+    },
+    "playlist": {
+      "name": "August 21",
+      "uri": "spotify:playlist:55zPfHwZC79VFL7CcD8pef"
+    }
+  }
+]

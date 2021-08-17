@@ -1,5 +1,5 @@
 from models.music.TrackLog import TrackLog, TrackLogs
-from typing import List
+from typing import List, Tuple
 from bson.objectid import ObjectId
 
 from utils import users_collection, get_time
@@ -87,7 +87,7 @@ class UserRepository:
             raise UserNotFoundException(identifier=id)
 
     @staticmethod
-    def read_track_log(id: PydanticObjectId, offset: int, length: int) -> TrackLogs:
+    def read_track_log(id: PydanticObjectId, offset: int, length: int) -> Tuple[TrackLogs, int]:
         if not isinstance(id, ObjectId):
             raise ValueError(f"id is type {type(id)} and not ObjectId")
 
