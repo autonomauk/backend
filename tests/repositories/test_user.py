@@ -228,8 +228,3 @@ class TestUserRepository:
         # Sanity check
         track_log.append('hi')
         assert set((str(f) for f in track_log)) - set((str(f) for f in user.track_log)) == set(['hi'])
-
-    def test_delete_all_except_one(self):
-        users = users_collection.find()
-        users_collection.delete_many({})        
-        UserRepository.create(User(**USER_DICT()))
