@@ -9,11 +9,11 @@
     "$date": "2021-08-17T12:32:57.174Z"
   },
   "spotifyAuthDetails": {
-    "access_token": "BQCgZPpSiK93M3208ginWAH05sOLiNBPAOLQDcxIkowX3wMsYFEvNAFd55eLSKu4kZa45tyrYddFVQh8vGiL4iW2aqlGOZZhgL2T-I_TDPQPJTZrl7QPJqcSVwSiOu5Rf7hv3tkBtt22xnLxHjHqCi8lNDPlTblK_r5uhcM3zGcrY1wn2jcFgjh437NyrYfLLP_-fhWRM_sL_PKCoMA5T_A60h6Kc0JPbFeHGQNgImo2",
+    "access_token": "BQCgZPpSiK93M3208ginWAH05sOLiNBPAOLQDcxIkowX3wMsYFEvNAFd55eLSKu5kZa45tyrYddFVQh8vGiL4iW2aqlGOZZhgL2T-I_TDPQPJTZrl7QPJqcSVwSiOu5Rf7hv3tkBtt22xnLxHjHqCi8lNDPlTblK_r5uhcM3zGcrY1wn2jcFgjh437NyrYfLLP_-fhWRM_sL_PKCoMA5T_A60h6Kc0JPbFeHGQNgImo2",
     "refresh_token": "AQARxAjdoU0ITAdf8aGYy99H1gKD7P3kbPEwOqCqUzCXQdOoy8hNZ4OYcgL0KdFOCMSn_zLDH0xaL-Y0X-KDUwosBX5C_4cA4iADIU3gxdIj6XAsSOb2VlRyW_B-EnFeOss",
     "expires_in": 3600,
     "expires_at": {
-      "$date": "2021-08-17T13:32:57.042Z"
+      "$date": "2021-07-17T13:32:57.042Z"
     },
     "token_type": "Bearer"
   },
