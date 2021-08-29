@@ -50,16 +50,12 @@ def SpotiCronRunner(threaded: bool = True):
     playlist_name = time.strftime('%B %y', time.localtime())
 
     users: Users = UserRepository.list({"settings.enabled":True})
-    print(f"Users: {len(users)=}")
     if threaded:
         with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
             executor.map(lambda x:SpotiCronRunnerPerUser(user=x, playlist_name=playlist_name).run(), users)
     else:
         for user in users:
             SpotiCronRunnerPerUser(user, playlist_name).run()
-
-    run_time = RunTimeStat(time=time.time()-t)
-    ##StatsRepository.spoticron_run_time(run_time)
 
 class SpotiCronRunnerPerUser:
     def __init__(self, user: User, playlist_name: str) -> None:
@@ -81,7 +77,6 @@ class SpotiCronRunnerPerUser:
     def rerun_on_token_expire(func):
         @functools.wraps(func)
         def wrapper(*args,**kwargs):
-            args[0].log.debug("hi")
             try:
                 return func(*args, **kwargs)
             except SpotifyException as e:
@@ -126,7 +121,8 @@ class SpotiCronRunnerPerUser:
             
             self.spotify.playlist_add_items(
                 self.target_playlist.id, [track.uri for track in tracks_to_add])
-            
+
+            StatsRepository.spoticron_tracks_added(len(tracks_to_add), id=self.user.id) 
             UserRepository.add_tracks_to_log(self.user.id, [TrackLog(track=f, playlist=self.target_playlist) for f in tracks_to_add])
             return True
         else:
