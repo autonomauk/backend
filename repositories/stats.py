@@ -49,5 +49,6 @@ class StatsRepository:
     def spoticron_disabled() -> None:
         SPOTICRON_DISABLED.inc()
 
+    @staticmethod
     def spoticron_tracks_added(n:int = 1, id = None) -> None:
-        SPOTICRON_TRACK_ADDED.label(id=id).inc(n)
+        SPOTICRON_TRACK_ADDED.labels(id=id).inc(n)
