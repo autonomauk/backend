@@ -130,7 +130,7 @@ class SpotiCronRunnerPerUser:
             # Find all songs in the target playlist if previous condition
             # wasn't met which saves API calls
             tracks_in_playlist = self.find_songs_in_target_playlist()
-
+        
         diff = set([f.uri for f in tracks_saved]) - \
             set([f.uri for f in tracks_in_playlist])
         tracks_to_add: Tracks = Tracks(
