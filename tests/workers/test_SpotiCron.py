@@ -9,7 +9,6 @@ from repositories.user import UserRepository
 
 import spotipy
 from utils.time import get_time
-from tests.variables import USER_DICT
 from models.User import User
 from models.music import Playlist, Playlists
 from workers.SpotiCron.main import SpotiCronRunnerPerUser
@@ -48,38 +47,18 @@ class TestTrackFilter:
         assert abs(now-now_dt) < datetime.timedelta(seconds=1)
         assert abs(now_dt-now) < datetime.timedelta(seconds=1)
 
+
+
 # pylint: disable=redefined-outer-name
 @pytest.fixture
 def spoticron_runner():
     playlist_name: str = str(PydanticObjectId())
-    user: User = User(**USER_DICT())
-
-    UserRepository.create(user)
+    user: User = UserRepository.get(PydanticObjectId('613a2cc41933ae5e743cd98f'))
 
     yield SpotiCronRunnerPerUser(user=user, playlist_name=playlist_name)
-    UserRepository.delete(user.id)
 
 
 class TestSpotiCronRunnerPerUser:
-    def test_init(self, spoticron_runner: SpotiCronRunnerPerUser):
-        assert isinstance(spoticron_runner, SpotiCronRunnerPerUser)
-        assert isinstance(spoticron_runner.spotify, spotipy.Spotify)
-        assert isinstance(spoticron_runner.target_playlist, Playlist)
-        assert isinstance(spoticron_runner.user, User)
-
-        assert spoticron_runner.user.spotifyAuthDetails.expires_at.replace(tzinfo=None) >= get_time()
-        assert spoticron_runner.user.spotifyAuthDetails.access_token != USER_DICT()[
-            'spotifyAuthDetails']['access_token']
-        assert spoticron_runner.user.spotifyAuthDetails.refresh_token == USER_DICT()[
-            'spotifyAuthDetails']['refresh_token']
-
-        updated_user: User = UserRepository.get(spoticron_runner.user.id)
-        spoticron_runner_user = spoticron_runner.user
-
-        assert updated_user.spotifyAuthDetails.access_token == spoticron_runner_user.spotifyAuthDetails.access_token
-        assert updated_user.spotifyAuthDetails.refresh_token == spoticron_runner_user.spotifyAuthDetails.refresh_token
-        assert updated_user.user_id == spoticron_runner_user.user_id
-
     def test_find_and_create_playlist(self, spoticron_runner: SpotiCronRunnerPerUser):
         spoticron_runner.target_playlist = Playlist(name="TEST")
         playlist: Playlist = spoticron_runner.find_playlist()
@@ -91,6 +70,8 @@ class TestSpotiCronRunnerPerUser:
 
         # Find it, but it 100% doesn't exist so we create it
         playlist: Playlist = spoticron_runner.find_playlist()
+        assert playlist is None
+        playlist: Playlist = spoticron_runner.create_playlist_for_user()
         assert playlist is not None
 
         tracks: list = spoticron_runner.spotify.user_playlist_tracks(
@@ -140,4 +121,4 @@ class TestSpotiCronRunnerPerUser:
             dt = t2-t1
             total_dt += dt
 
-        assert (dt/n) < 1.0 # Average run-time <1.0s
+        assert (dt/n) < 1.0 #  Average run-time <1.0s
