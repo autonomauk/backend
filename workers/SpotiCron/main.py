@@ -1,4 +1,3 @@
-from concurrent.futures import thread
 import functools
 from models.music.TrackLog import TrackLog
 import time
@@ -13,13 +12,18 @@ from loguru import logger
 from spotipy.exceptions import SpotifyException
 import spotipy
 
-from repositories.stats import SPOTICRON_RUN_TIME, StatsRepository
+from repositories.stats import StatsRepository
 from repositories.user import UserRepository
 from models.SpotifyAuthDetails import SpotifyAuthDetails
 from models.User import User, Users
 from models.Stats import RunTimeStat
 from models.music import Track, Tracks, Playlist, Playlists
-from config import SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET, SPOTIFY_REDIRECT_URI, AUTONOMA_WEBSITE
+from config import (
+    SPOTIFY_CLIENT_ID,
+    SPOTIFY_CLIENT_SECRET,
+    SPOTIFY_REDIRECT_URI,
+    AUTONOMA_WEBSITE
+)
 from prometheus_client import start_http_server
 
 from .filter import TrackFilter
@@ -47,7 +51,6 @@ spotipy.Spotify._internal_call = wrapper
 
 @timeit
 def SpotiCronRunner(threaded: bool = True):
-    t = time.time()
     playlist_name = time.strftime('%B %y', time.localtime())
 
     users: Users = UserRepository.list({"settings.enabled": True})
@@ -70,7 +73,8 @@ class SpotiCronRunnerPerUser:
         self.user: User = user
         self.target_playlist: Playlist = Playlist(name=playlist_name)
 
-        # Compare datetime objects rather than spotipys shite non-TZ aware method
+        # Compare datetime objects rather than spotipys 
+        # shite non-TZ aware method
         if self.user.spotifyAuthDetails.expires_at < get_time():
             self.reauthorize()
 
