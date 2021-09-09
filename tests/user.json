@@ -10,7 +10,7 @@
   },
   "spotifyAuthDetails": {
     "access_token": "BQCgZPpSiK93M3208ginWAH05sOLiNBPAOLQDcxIkowX3wMsYFEvNAFd55eLSKu5kZa45tyrYddFVQh8vGiL4iW2aqlGOZZhgL2T-I_TDPQPJTZrl7QPJqcSVwSiOu5Rf7hv3tkBtt22xnLxHjHqCi8lNDPlTblK_r5uhcM3zGcrY1wn2jcFgjh437NyrYfLLP_-fhWRM_sL_PKCoMA5T_A60h6Kc0JPbFeHGQNgImo2",
-    "refresh_token": "AQBddJOREwSuG2jfcG4Y-uHtqk-rgwjyamkLzHejywk4i7gQ1nvHjChyMBtYpiSjggQxOF2MeLoT4ANab832x_XhUVV73_M-7_2_7GTFDUos7jgSE3fl62PcaIu9FLli_o8",
+    "refresh_token": "AQA23A-iAh8WT-ldGcu8fuwSY5jhJbNldtjdlV9feO0mqrWIubTCmwXusX0c-fH4qj3nEke65D3WqGTnMOeFnz3-ZYBx_RmePqa0T3vKRRaEkPPAlRa5Is7N2H9kxcgnEbg",
     "expires_in": 3600,
     "expires_at": {
       "$date": "2021-07-17T13:32:57.042Z"
