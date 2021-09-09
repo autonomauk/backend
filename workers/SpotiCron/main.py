@@ -110,8 +110,16 @@ class SpotiCronRunnerPerUser:
 
         # Find all saved tracks for this month
         tracks_saved = self.find_saved_tracks_filtered()
-        tracks_in_playlist = self.find_songs_in_target_playlist()
-        
+
+        # To prevent empty playlists being made, we check if there are
+        # filtered tracks and the target playlist hasn't been found
+        if len(tracks_saved) > 0 and self.target_playlist is None:
+            self.target_playlist = self.create_playlist_for_user()
+            tracks_in_playlist = []
+        else:
+            # Find all songs in the target playlist if previous condition
+            # wasn't met which saves API calls
+            tracks_in_playlist = self.find_songs_in_target_playlist()
         diff = set([f.uri for f in tracks_saved]) - set([f.uri for f in tracks_in_playlist])
         tracks_to_add: Tracks = Tracks([f for f in tracks_saved if f.uri in diff])
 
@@ -151,7 +159,7 @@ class SpotiCronRunnerPerUser:
             if offset < total:
                 offset += limit
             else:
-                return self.create_playlist_for_user()
+                return None
 
     @timeit
     def create_playlist_for_user(self) -> Playlist:
