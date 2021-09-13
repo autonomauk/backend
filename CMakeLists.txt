@@ -17,6 +17,7 @@ set( VARS
             SPOTIFY_REDIRECT_URI
             MONGODB_URI
             MONGODB_DB
+            API_DIR
 )
 
 foreach(VAR IN LISTS VARS)
