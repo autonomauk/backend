@@ -50,6 +50,7 @@ jobs:
           tag: ${{ steps.get_version.outputs.VERSION }}
           release_name: ${{ steps.get_version.outputs.VERSION }}
           body: "${{ steps.read_changes.outputs.CHANGES_BODY }}"
+          file: CHANGES.md
 
 
   deploy:
