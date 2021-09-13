@@ -62,7 +62,7 @@ jobs:
         PORT: ${{ secrets.PORT }}
         API_DIR: ${{ secrets.API_DIR }}
         IP: ${{ secrets.IP  }}
-        JWT_SECRET_KEY: ${{ secrets.WT_SECRET_KEY       
+        JWT_SECRET_KEY: ${{ secrets.WT_SECRET_KEY }}       
         ENV: ${{ secrets.ENV }}
         SPOTIFY_CLIENT_ID: ${{ secrets.SPOTIFY_CLIENT_ID }}
         SPOTIFY_CLIENT_SECRET: ${{ secrets.SPOTIFY_CLIENT_SECRET }}
