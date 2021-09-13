@@ -11,7 +11,7 @@ This repo contains the code for Autonoma's backend.
 2. Run the server with `python3 . --server --env development`
 3. Access the API at `localhost:3001`
 
-For the best results user `docker-compose` in conjunction with the top-level repo https://github.com/autonomauk/autonoma.
+For the best results use `docker-compose` in conjunction with the top-level repo https://github.com/autonomauk/autonoma.
 
 ## Documentation
 
