@@ -3,16 +3,73 @@
 
 name: Deploy backend
 on:
-  create:
+  push:
     tags:
-      - v*
+      - "v*.*.*"
   workflow_dispatch:
 
 jobs:
+  generate-changelog:
+    name: Generate changelog and update release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@main
+        with:
+          fetch-depth: 0
+          
+      - name: Get the version
+        id: get_version
+        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+
+      - name: Generate a changelog
+        uses: orhun/git-cliff-action@v1
+        id: git-cliff
+        with:
+          config: config/cliff.toml
+          args: -vv --latest --strip header
+        env:
+          OUTPUT: CHANGES.md
+      
+      # This step reads a file from repo and use it for body of the release
+      # This works on any self-hosted runner OS
+      - name: Read CHANGES.md and use it as a body of new release
+        id: read_changes
+        shell: bash
+        run: |
+          r=${{ secrets.(cat CHANGES.md)                               # <--- Read CHANGES.md (Provide correct path as per your repo)
+          r="${r//'%'/'%25'}"                               # Multiline escape sequences for %
+          r="${r//$'\n'/'%0A'}"                             # Multiline escape sequences for '\n'
+          r="${r//$'\r'/'%0D'}"                             # Multiline escape sequences for '\r'
+          echo "::set-output name=CHANGES_BODY::$r"         # <--- Set environment variable
+
+      - name: Upload the release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ steps.get_version.outputs.VERSION }}
+          release_name: ${{ steps.get_version.outputs.VERSION }}
+          body: "${{ steps.read_changes.outputs.CHANGES_BODY }}"
+
+
   deploy:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+
+    - name: Generate config/config.py
+      env:
+        PORT: ${{ secrets.PORT }}
+        API_DIR: ${{ secrets.API_DIR }}
+        IP: ${{ secrets.IP  }}
+        JWT_SECRET_KEY: ${{ secrets.WT_SECRET_KEY       
+        ENV: ${{ secrets.ENV }}
+        SPOTIFY_CLIENT_ID: ${{ secrets.SPOTIFY_CLIENT_ID }}
+        SPOTIFY_CLIENT_SECRET: ${{ secrets.SPOTIFY_CLIENT_SECRET }}
+        SPOTIFY_REDIRECT_URI: ${{ secrets.SPOTIFY_REDIRECT_URI }}
+        MONGODB_URI: ${{ secrets.MONGODB_URI }}
+        MONGODB_DB: ${{ secrets.MONGODB_DB }}
+      run: sudo apt-get update -y && sudo apt-get install cmake -y && cmake .
     
     - name: Set up SSH agent
       uses: webfactory/ssh-agent@v0.5.3
@@ -32,10 +89,7 @@ jobs:
     - name: Install packages
       run: |
         ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{secrets.API_DIR}}; python3.9 -m pip install -r requirements.txt"
-        
-    - name: Decrypt config.py
-      run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{secrets.API_DIR}}; openssl enc -d -aes-256-cbc -pbkdf2 -in config/config.py.enc -out config/config.py -k ${{ secrets.CONFIG_KEY }}"
-    
+   
     - name: MongoDB migrations
       run: |
         ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{secrets.API_DIR}}; python3.9 . --migrate --env=production"    
