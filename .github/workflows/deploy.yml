@@ -37,7 +37,7 @@ jobs:
         id: read_changes
         shell: bash
         run: |
-          r=$(cat CHANGES.md)                               # <--- Read CHANGES.md (Provide correct path as per your repo)
+          r=${{ secrets.(cat CHANGES.md)                               # <--- Read CHANGES.md (Provide correct path as per your repo)
           r="${r//'%'/'%25'}"                               # Multiline escape sequences for %
           r="${r//$'\n'/'%0A'}"                             # Multiline escape sequences for '\n'
           r="${r//$'\r'/'%0D'}"                             # Multiline escape sequences for '\r'
@@ -56,6 +56,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+
+    - name: Generate config/config.py
+      env:
+        PORT: ${{ secrets.PORT }}
+        API_DIR: ${{ secrets.API_DIR }}
+        IP: ${{ secrets.IP  }}
+        JWT_SECRET_KEY: ${{ secrets.WT_SECRET_KEY       
+        ENV: ${{ secrets.ENV }}
+        SPOTIFY_CLIENT_ID: ${{ secrets.SPOTIFY_CLIENT_ID }}
+        SPOTIFY_CLIENT_SECRET: ${{ secrets.SPOTIFY_CLIENT_SECRET }}
+        SPOTIFY_REDIRECT_URI: ${{ secrets.SPOTIFY_REDIRECT_URI }}
+        MONGODB_URI: ${{ secrets.MONGODB_URI }}
+        MONGODB_DB: ${{ secrets.MONGODB_DB }}
+      run: sudo apt-get update -y && sudo apt-get install cmake -y && cmake .
     
     - name: Set up SSH agent
       uses: webfactory/ssh-agent@v0.5.3
@@ -75,10 +89,7 @@ jobs:
     - name: Install packages
       run: |
         ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{secrets.API_DIR}}; python3.9 -m pip install -r requirements.txt"
-        
-    - name: Decrypt config.py
-      run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{secrets.API_DIR}}; openssl enc -d -aes-256-cbc -pbkdf2 -in config/config.py.enc -out config/config.py -k ${{ secrets.CONFIG_KEY }}"
-    
+   
     - name: MongoDB migrations
       run: |
         ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{secrets.API_DIR}}; python3.9 . --migrate --env=production"    
