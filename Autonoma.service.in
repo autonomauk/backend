@@ -2,8 +2,8 @@
 Description=Autonoma API Worker
 
 [Service]
-ExecStart=python3.9 /home/autonoma/Autonoma/backend --%I --env production
-WorkingDirectory=/home/autonoma/Autonoma/backend
+ExecStart=python3.9 @PROJECT_SOURCE_DIR@ --%I --env production
+WorkingDirectory=@PROJECT_SOURCE_DIR@
 Restart=always
 # Restart service after 10 seconds if python service crashes
 RestartSec=10
