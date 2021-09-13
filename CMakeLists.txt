@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.11...3.19)
 
 project(
   AutonomaBackend 
-  VERSION 0.8.4
+  VERSION 0.8.6
   DESCRIPTION "Backend server for Autonoma"
   LANGUAGES NONE
   HOMEPAGE_URL "https://spotify.janhendrikewers.uk")
