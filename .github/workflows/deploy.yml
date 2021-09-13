@@ -37,7 +37,7 @@ jobs:
         id: read_changes
         shell: bash
         run: |
-          r=${{ secrets.(cat CHANGES.md)                               # <--- Read CHANGES.md (Provide correct path as per your repo)
+          r=$(cat CHANGES.md)                               # <--- Read CHANGES.md (Provide correct path as per your repo)
           r="${r//'%'/'%25'}"                               # Multiline escape sequences for %
           r="${r//$'\n'/'%0A'}"                             # Multiline escape sequences for '\n'
           r="${r//$'\r'/'%0D'}"                             # Multiline escape sequences for '\r'
