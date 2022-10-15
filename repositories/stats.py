@@ -1,6 +1,6 @@
 import prometheus_client
 
-from config import VERSION
+from config import settings
 
 
 from models.Stats import RunTimeStat, UserCreationStat, UserDeletionStat
@@ -15,7 +15,7 @@ SPOTICRON_DISABLED = prometheus_client.Counter("spoticron_disabled", "Number of 
 SPOTICRON_ENABLED = prometheus_client.Counter("spoticron_enabled", "Number of times accounts have enabled spoticron")
 
 AUTONOMA_BUILD = prometheus_client.Info('autonoma_api_build', "Information about the backend build")
-AUTONOMA_BUILD.info({'version':VERSION})
+AUTONOMA_BUILD.info({'version':settings.VERSION})
 
 class StatsRepository:
     @staticmethod

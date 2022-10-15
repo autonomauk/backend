@@ -1,4 +1,6 @@
 from os import stat
+
+from config import settings
 from models.ObjectId import PydanticObjectId
 from urllib3.response import HTTPResponse
 import utils
@@ -7,7 +9,6 @@ from datetime import timedelta,datetime
 from starlette.responses import RedirectResponse
 import inspect
 
-from config import *
 from loguru import logger
 
 from models.JWToken import JWToken
@@ -28,14 +29,14 @@ class AuthFlowRepository:
     @staticmethod
     def create_JWT(user:User) -> JWToken:
         logger.debug(f"Creating JWT for {user.id=}")
-        to_encode = {'id':str(user.id),'exp': datetime.utcnow() + timedelta(minutes=JWT_ACCESS_TOKEN_EXPIRE_MINUTES)}
-        encoded_jwt = joseJWT.encode(to_encode, JWT_SECRET_KEY, algorithm=JWT_ALGORITHM)
+        to_encode = {'id':str(user.id),'exp': datetime.utcnow() + timedelta(minutes=settings.jwt.ACCESS_TOKEN_EXPIRE_MINUTES)}
+        encoded_jwt = joseJWT.encode(to_encode, settings.jwt.SECRET_KEY, algorithm=settings.jwt.ALGORITHM)
         return JWToken(access_token=encoded_jwt,token_type="bearer")
 
     @staticmethod
     def validate_JWT(jwt_str:str) -> str:
         try:
-            payload = joseJWT.decode(str(jwt_str), JWT_SECRET_KEY, algorithms=[JWT_ALGORITHM])
+            payload = joseJWT.decode(str(jwt_str), settings.jwt.SECRET_KEY, algorithms=[settings.jwt.ALGORITHM])
             id: str = payload.get("id")
             if id is None:
                 raise AuthenticationFailureException()
@@ -86,16 +87,16 @@ class AuthFlowRepository:
 
     @staticmethod
     def login() -> RedirectResponse:
-        scopes: str = SPOTIFY_SCOPE 
+        scopes: str = settings.spotify.SCOPE
         response: RedirectResponse = RedirectResponse(
-            f"https://accounts.spotify.com/authorize?response_type=code&client_id={SPOTIFY_CLIENT_ID}&scope={scopes}&redirect_uri={SPOTIFY_REDIRECT_URI}"
+            f"https://accounts.spotify.com/authorize?response_type=code&client_id={settings.spotify.CLIENT_ID}&scope={scopes}&redirect_uri={settings.spotify.REDIRECT_URI}"
         )
         return response
 
     @staticmethod
     def login_callback(code: str) -> RedirectResponse:
         # Minimal testing coverage as this is a pretty integrated system with spotify. Would include a lot of faff to test. cba for now
-        str_token = f"{SPOTIFY_CLIENT_ID}:{SPOTIFY_CLIENT_SECRET}"
+        str_token = f"{settings.spotify.CLIENT_ID}:{settings.spotify.CLIENT_SECRET}"
         basic_token_bytes = base64.urlsafe_b64encode(str_token.encode("utf-8"))
         basic_token_str = str(basic_token_bytes, "utf-8")
 
@@ -107,7 +108,7 @@ class AuthFlowRepository:
         body = {
             "grant_type": "authorization_code",
             "code": code,
-            "redirect_uri": SPOTIFY_REDIRECT_URI
+            "redirect_uri": settings.spotify.REDIRECT_URI
         }
 
         res: HTTPResponse = requests.post(

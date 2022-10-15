@@ -18,12 +18,7 @@ from models.SpotifyAuthDetails import SpotifyAuthDetails
 from models.User import User, Users
 from models.Stats import RunTimeStat
 from models.music import Track, Tracks, Playlist, Playlists
-from config import (
-    SPOTIFY_CLIENT_ID,
-    SPOTIFY_CLIENT_SECRET,
-    SPOTIFY_REDIRECT_URI,
-    AUTONOMA_WEBSITE
-)
+from config import settings
 from prometheus_client import start_http_server
 
 from .filter import TrackFilter
@@ -31,9 +26,9 @@ from .filter import TrackFilter
 import concurrent.futures
 
 spotify_oauth = spotipy.oauth2.SpotifyOAuth(
-    client_id=SPOTIFY_CLIENT_ID,
-    client_secret=SPOTIFY_CLIENT_SECRET,
-    redirect_uri=SPOTIFY_REDIRECT_URI)
+    client_id=settings.spotify.CLIENT_ID,
+    client_secret=settings.spotify.CLIENT_SECRET,
+    redirect_uri=settings.spotify.REDIRECT_URI)
 
 # Over-write the original function to track our Spotify API requests
 # pylint:disable=protected-access
@@ -184,7 +179,7 @@ class SpotiCronRunnerPerUser:
             self.target_playlist.name,
             public=True,
             collaborative=False,
-            description=f"Playlist created by {AUTONOMA_WEBSITE}"
+            description=f"Playlist created by {settings.server.url}"
         )
         return Playlist(**res)
 

@@ -1,0 +1,25 @@
+[default]
+VERSION = "0.8.6"
+
+[default.server]
+URL = "https://spotify.janhendrikewers.uk"
+API_PATH = "/api"
+PORT = "3001"
+IP = "0.0.0.0"
+OPENAPI_URL="/openapi.json"
+DOCS=true
+
+[default.spotify]
+SCOPE = "user-library-read playlist-modify-public playlist-modify-private"
+
+[development]
+[development.server]
+dynaconf_merge=true
+URL = "http://localhost"
+API_PATH = ""
+
+[production]
+[production.server]
+dynaconf_merge=true
+openapi_url=""
+DOCS=false

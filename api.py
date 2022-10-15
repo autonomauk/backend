@@ -1,3 +1,6 @@
+from loguru import logger
+
+from config import settings
 from repositories.exceptions import BaseAPIException
 
 from routers import login
@@ -10,11 +13,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from starlette.responses import RedirectResponse
 from starlette_exporter import PrometheusMiddleware, handle_metrics
 
-import config
-
 app = FastAPI(
     title="AutonomaAPI",
-    openapi_url = None if config.ENV == "production" else "/openapi.json",
+    openapi_url = settings.server.openapi_url if settings.server.docs else None,
     docs_url = None,
     redoc_url = None
 )
@@ -30,17 +31,17 @@ def http_exception_handler(request, exc) -> BaseAPIException:
 ########
 # DOCS #
 ########
-if config.ENV != "production":
+if settings.server.docs:
     @app.get("/docs", include_in_schema=False)
-    def get_swagger_ui_html():
+    def swagger_html():
         return get_swagger_ui_html(
-            openapi_url=config.API_PATH+app.openapi_url,
+            openapi_url=settings.server.API_PATH+app.openapi_url,
             title=app.title + " - Swagger UI"
         )
     @app.get("/redoc", include_in_schema=False)
     def redoc_html():
         return get_redoc_html(
-            openapi_url=config.API_PATH+app.openapi_url,
+            openapi_url=settings.server.API_PATH+app.openapi_url,
             title=app.title + " - ReDoc"
         )
 
