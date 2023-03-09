@@ -1,5 +1,5 @@
 # Create image based on the official Python image from dockerhub
-FROM python:3.9.5
+FROM python:3.10
 
 # Create app directory
 WORKDIR /usr/src/app
@@ -9,6 +9,3 @@ COPY requirements.txt /usr/src/app/requirements.txt
 
 #Instlal requirements
 RUN pip install -r requirements.txt
-
-# Serve the app
-CMD ["python3", ".", "--server","--env","development","-v"]
