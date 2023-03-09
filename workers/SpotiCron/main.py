@@ -1,7 +1,7 @@
 import functools
 from models.music.TrackLog import TrackLog
 import time
-from utils.time import get_time
+from utils.time import get_non_tzaware_time
 from utils.logger import timeit
 import dateutil.parser
 import copy
@@ -68,9 +68,7 @@ class SpotiCronRunnerPerUser:
         self.user: User = user
         self.target_playlist: Playlist = Playlist(name=playlist_name)
 
-        # Compare datetime objects rather than spotipys 
-        # shite non-TZ aware method
-        if self.user.spotifyAuthDetails.expires_at < get_time():
+        if self.user.spotifyAuthDetails.expires_at < get_non_tzaware_time():
             self.reauthorize()
 
         self.spotify = spotipy.Spotify(
@@ -107,23 +105,21 @@ class SpotiCronRunnerPerUser:
         self.log.debug(
             f"Access token refreshed ({self.user.spotifyAuthDetails.access_token:16.16}...)")
 
-    @logger.catch
     @rerun_on_token_expire
     def run(self) -> bool:
+        # Find all saved tracks for this month
+        tracks_saved = self.find_saved_tracks_filtered()
+        if len(tracks_saved) == 0:
+            self.log.debug("No tracks to add")
+            return False
+
         # Updates self.target_playlist
         self.target_playlist = self.find_playlist()
 
-        # Find all saved tracks for this month
-        tracks_saved = self.find_saved_tracks_filtered()
-
-        # To prevent empty playlists being made, we check if there are
-        # filtered tracks and the target playlist hasn't been found
-        if len(tracks_saved) > 0 and self.target_playlist is None:
+        if self.target_playlist is None:
             self.target_playlist = self.create_playlist_for_user()
             tracks_in_playlist = []
         else:
-            # Find all songs in the target playlist if previous condition
-            # wasn't met which saves API calls
             tracks_in_playlist = self.find_songs_in_target_playlist()
 
         diff = set([f.uri for f in tracks_saved]) - \
@@ -131,21 +127,17 @@ class SpotiCronRunnerPerUser:
         tracks_to_add: Tracks = Tracks(
             [f for f in tracks_saved if f.uri in diff])
 
-        if len(tracks_to_add) > 0:
-            self.log.info(
-                f"{len(tracks_to_add)} track{'s' if len(tracks_to_add) > 1 else ''} to add")
+        self.log.info(
+            f"{len(tracks_to_add)} track{'s' if len(tracks_to_add) > 1 else ''} to add")
 
-            self.spotify.playlist_add_items(
-                self.target_playlist.id, [track.uri for track in tracks_to_add])
+        self.spotify.playlist_add_items(
+            self.target_playlist.id, [track.uri for track in tracks_to_add])
 
-            StatsRepository.spoticron_tracks_added(
-                len(tracks_to_add), id=self.user.id)
-            UserRepository.add_tracks_to_log(self.user.id, [TrackLog(
-                track=f, playlist=self.target_playlist) for f in tracks_to_add])
-            return True
-        else:
-            self.log.debug("No tracks to add")
-            return False
+        StatsRepository.spoticron_tracks_added(
+            len(tracks_to_add), id=self.user.id)
+        UserRepository.add_tracks_to_log(self.user.id, [TrackLog(
+            track=f, playlist=self.target_playlist) for f in tracks_to_add])
+        return True
 
     @timeit
     def find_playlist(self) -> Playlist:

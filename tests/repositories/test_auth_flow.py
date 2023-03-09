@@ -5,13 +5,13 @@ from starlette.responses import RedirectResponse
 from fastapi import status as statuscode
 import pytest
 
-from repositories.exceptions import (AuthenticationFailureException, 
+from config import settings
+from repositories.exceptions import (AuthenticationFailureException,
                                     SpotifyAuthenticationFailureException)
 from repositories.auth_flow import AuthFlowRepository
 from models.ObjectId import PydanticObjectId
 from models.User import User
 from models.JWToken import JWToken
-import config
 
 STATIC_USER_DICT = {
     "_id": str(PydanticObjectId()),
@@ -113,9 +113,9 @@ class TestAuthFlowRepository:
         url: str = rr.headers['location']
 
         assert "accounts.spotify.com/authorize" in url
-        assert config.SPOTIFY_CLIENT_ID in url
-        assert config.SPOTIFY_REDIRECT_URI in url
-        assert "+".join(config.SPOTIFY_SCOPE.split()) in url
+        assert settings.spotify.CLIENT_ID in url
+        assert settings.spotify.REDIRECT_URI in url
+        assert "+".join(settings.spotify.SCOPE.split()) in url
 
     def test_login_callback(self):
         with pytest.raises(SpotifyAuthenticationFailureException):

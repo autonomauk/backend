@@ -1,8 +1,7 @@
 import argparse
-from config import settings
 import uvicorn
 from loguru import logger
-
+import os
 parser = argparse.ArgumentParser(prog='Autonoma', description='Autonoma CLI')
 
 parser.add_argument('--worker', action='store_true')
@@ -16,6 +15,9 @@ parser.add_argument("-v","--verbose", action='count', default=1, help="increase 
 
 if __name__ == "__main__":
     args = parser.parse_args()
+
+    os.environ['ENV_FOR_DYNACONF'] = args.env
+    from config import settings
 
     from utils.logger import get_logger_config
     logger.configure(**get_logger_config(args.verbose))

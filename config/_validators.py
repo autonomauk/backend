@@ -27,5 +27,5 @@ validators: List[Validator] = [
         "spotify.redirect_uri",
         **GLOBAL_DEFAULTS
     ),
-    Validator("db.mongodb_uri", "db.mongodb_db", **GLOBAL_DEFAULTS),
+    Validator("database.uri", "database.db", **GLOBAL_DEFAULTS),
 ]
