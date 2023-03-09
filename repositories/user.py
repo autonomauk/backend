@@ -2,7 +2,7 @@ from models.music.TrackLog import TrackLog, TrackLogs
 from typing import List, Tuple
 from bson.objectid import ObjectId
 
-from utils import users_collection, get_time
+from utils import users_collection, get_non_tzaware_time
 from models.music import Track, Tracks
 from models.User import User, Users
 from models.ObjectId import PydanticObjectId
@@ -39,7 +39,8 @@ class UserRepository:
     def create(create: User) -> User:
         if not isinstance(create, User):
             raise ValueError(f"create is type {type(create)} and not User")
-
+        if create.id is None:
+            create.id = PydanticObjectId()
         document = create.dict()
         results = users_collection.insert_one(document)
         assert results.acknowledged
@@ -53,7 +54,7 @@ class UserRepository:
             raise ValueError(f"id is type {type(id)} and not User")
 
         document = update.dict()
-        document['updatedAt'] = get_time()
+        document['updatedAt'] = get_non_tzaware_time()
         results = users_collection.update_one({'_id': id}, {"$set": document})
         if not results.modified_count:
             raise UserNotFoundException(identifier=id)

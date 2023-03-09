@@ -1,7 +1,7 @@
 import datetime
 from functools import lru_cache
 
-from utils.time import get_time
+from utils.time import get_non_tzaware_time
 
 class TrackFilter:
     @classmethod
@@ -12,4 +12,4 @@ class TrackFilter:
 
     @staticmethod
     def now() -> datetime.datetime:
-        return get_time()
+        return get_non_tzaware_time()

@@ -2,7 +2,7 @@ from models.music.Track import Tracks
 from models.ObjectId import PydanticObjectId
 import datetime
 
-from utils.time import get_time
+from utils.time import get_non_tzaware_time
 
 import json
 from bson import json_util
@@ -28,8 +28,8 @@ def USER_DICT():
 
     return user
 
-TRACK_DICT_1 = {'createdAt': get_time(),
-                'updatedAt': get_time(),
+TRACK_DICT_1 = {'createdAt': get_non_tzaware_time(),
+                'updatedAt': get_non_tzaware_time(),
                 'name': 'Mr. Brightside',
                 'artists': [{
                     'uri': 'spotify:artist:0C0XlULifJtAgn6ZNCW2eu',
@@ -43,8 +43,8 @@ TRACK_DICT_1 = {'createdAt': get_time(),
     'uri': 'spotify:track:3n3Ppam7vgaVa1iaRUc9Lp'
 }
 
-TRACK_DICT_2 = {'createdAt': get_time(),
-                'updatedAt': get_time(),
+TRACK_DICT_2 = {'createdAt': get_non_tzaware_time(),
+                'updatedAt': get_non_tzaware_time(),
                 'name': 'Mr. Lightside',
                 'artists': [{
                     'uri': 'spotify:artist:AF0XlULifJtAgn6ZNCW2eu',

@@ -1,14 +1,14 @@
-from utils import get_time
+from utils import get_non_tzaware_time
 import datetime
 from pydantic import BaseModel, Field
 
 class TimedBaseModel(BaseModel):
     createdAt: datetime.datetime= Field(
         description="Created at datetime",
-        default_factory=lambda: get_time()
+        default_factory=lambda: get_non_tzaware_time()
     )
 
     updatedAt: datetime.datetime = Field(
         description="Created at datetime",
-        default_factory=lambda: get_time()
+        default_factory=lambda: get_non_tzaware_time()
     )
