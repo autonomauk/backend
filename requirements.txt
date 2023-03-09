@@ -45,3 +45,4 @@ websockets==9.1
 yarl==1.6.3
 starlette_exporter==0.10.0
 dynaconf==3.1.9
+pytz==2022.7.1
