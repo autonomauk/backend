@@ -1,6 +1,10 @@
 [default]
 VERSION = "0.8.6"
 
+[default.jwt]
+ACCESS_TOKEN_EXPIRE_MINUTES=10
+ALGORITHM="HS256"
+
 [default.server]
 URL = "https://spotify.janhendrikewers.uk"
 API_PATH = "/api"
@@ -18,8 +22,16 @@ dynaconf_merge=true
 URL = "http://localhost"
 API_PATH = ""
 
+VALUE_FOR_TESTING=1
+
+[development.database]
+URI = "mongodb://test:test@mongo:27017/"
+DB = "AutonomaDev"
+
 [production]
 [production.server]
 dynaconf_merge=true
 openapi_url=""
 DOCS=false
+
+VALUE_FOR_TESTING=2
