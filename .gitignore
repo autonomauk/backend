@@ -142,7 +142,7 @@ config/config.py
 Autonoma.service
 
 # Settings
-config/.secrets.toml
+config/secrets.toml
 
 # Profiling
 profiling_stats.txt

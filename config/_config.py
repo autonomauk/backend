@@ -13,7 +13,7 @@ def get_setting():
     logger.debug(f"Running get_settings (count = {next(_c)}) with {os.environ['ENV_FOR_DYNACONF']=}")
     return Dynaconf(
         envvar_prefix="AUTONOMA",
-        settings_files=["settings.toml", ".secrets.toml"],
+        settings_files=["settings.toml", "secrets.toml"],
         # Allows [default], [development], etc.
         # https://www.dynaconf.com/configuration/#environments
         environments=True,
