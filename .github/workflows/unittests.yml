@@ -11,28 +11,26 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
-      - name: Generate config.py from env variables
-        env:
-          PORT: ${{ secrets.PORT }}
-          API_DIR: ${{ secrets.API_DIR }}
-          IP: ${{ secrets.IP_TEST }}
-          JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY_TEST }}
-          ENV: "development"
-          SPOTIFY_CLIENT_ID: ${{ secrets.SPOTIFY_CLIENT_ID_TEST }}
-          SPOTIFY_CLIENT_SECRET: ${{ secrets.SPOTIFY_CLIENT_SECRET_TEST }}
-          SPOTIFY_REDIRECT_URI: ${{ secrets.SPOTIFY_REDIRECT_URI_TEST }}
-          MONGODB_URI: ${{ secrets.MONGODB_URI_TEST }}
-          MONGODB_DB: ${{ secrets.MONGODB_DB_TEST }}
-        run: sudo apt-get update -y && sudo apt-get install cmake -y && cmake .
+      - name: Generate secrets.toml from env variables
+        run: |
+          cat << EOT >> config/secrets.toml
+          dynaconf_merge = true
+          [development]
+          [development.jwt]
+          SECRET_KEY = "${{ secrets.JWT_SECRET_KEY_TEST }}"
+          [development.spotify]
+          CLIENT_ID= ${{ secrets.SPOTIFY_CLIENT_ID_TEST }}
+          CLIENT_SECRET= ${{ secrets.SPOTIFY_CLIENT_SECRET_TEST }}
+          REDIRECT_URI= ${{ secrets.SPOTIFY_REDIRECT_URI_TEST }}
+          EOT
 
       - name: Set up Python
         uses: actions/setup-python@v2
 
       - name: Project dependencies
-        run: pip install -r requirements.txt && pip install pytest coverage
+        run: pip install -r requirements.txt -r tests/requirements.txt
 
       - name: Run tests
         run: coverage run --rcfile .coveragerc --branch --source=./ -m pytest && coverage xml
