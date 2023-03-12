@@ -9,31 +9,35 @@ on:
 jobs:
   backend:
     runs-on: ubuntu-latest
-    
+    services:
+      mongo:
+        image: mongo:6.0
+        env:
+          MONGO_INITDB_ROOT_USERNAME: "test"
+          MONGO_INITDB_ROOT_PASSWORD: "test"
+        ports:
+          - 27017:27017
+
     steps:
       - uses: actions/checkout@v2
 
       - name: Generate secrets.toml from env variables
         run: |
-          cat << EOT >> config/secrets.toml
-          dynaconf_merge = true
-          [development]
-          [development.jwt]
-          SECRET_KEY = "${{ secrets.JWT_SECRET_KEY_TEST }}"
-          [development.spotify]
-          CLIENT_ID= ${{ secrets.SPOTIFY_CLIENT_ID_TEST }}
-          CLIENT_SECRET= ${{ secrets.SPOTIFY_CLIENT_SECRET_TEST }}
-          REDIRECT_URI= ${{ secrets.SPOTIFY_REDIRECT_URI_TEST }}
-          EOT
+          echo "${{ secrets.SECRETS_TOML_B64 }}" | base64 -d > config/secrets.toml
+          cat config/secrets.toml
 
       - name: Set up Python
         uses: actions/setup-python@v2
+        with:
+          python-version: '3.10'
 
       - name: Project dependencies
         run: pip install -r requirements.txt -r tests/requirements.txt
 
       - name: Run tests
         run: coverage run --rcfile .coveragerc --branch --source=./ -m pytest && coverage xml
+        env:
+          ENV_FOR_DYNACONF: "development"
 
       - uses: codecov/codecov-action@v1
         with:
