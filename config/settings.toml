@@ -25,7 +25,7 @@ API_PATH = ""
 VALUE_FOR_TESTING=1
 
 [development.database]
-URI = "mongodb://test:test@mongo:27017/"
+URI = "mongodb://test:test@0.0.0.0:27017/"
 DB = "AutonomaDev"
 
 [production]
