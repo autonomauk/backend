@@ -41,6 +41,6 @@ urllib3==1.26.5
 uvicorn==0.14.0
 uvloop==0.15.2
 watchgod==0.7
-websockets==9.1
+websockets==11.0.2
 yarl==1.6.3
 starlette_exporter==0.10.0
